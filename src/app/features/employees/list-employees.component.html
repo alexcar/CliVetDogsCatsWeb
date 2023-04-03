@@ -1,0 +1,73 @@
+<mat-card class="main-card">
+  <mat-card-header>
+    <mat-card-title>Lista de Funcionários</mat-card-title>
+  </mat-card-header>
+  <mat-card-content class="margin-card">
+    <mat-form-field class="fill width-field-30">
+      <mat-label>Filtro</mat-label>
+      <input matInput (keyup)="applyFilter($event)" #input>
+    </mat-form-field>
+
+    <div>
+      <button mat-raised-button
+        (click)="add()"
+        routerLinkActive="router-link-active"
+        color="primary">Adicionar</button>
+    </div>
+
+    <div class="overlaySpinner" *ngIf="showSpinner">
+      <div class="centerSpinner">
+        <mat-spinner></mat-spinner>
+      </div>
+    </div>
+
+    <div class="search-table-list" *ngIf="listEmployee.length == 0">
+      Nenhum funcionario cadastrado
+    </div>
+
+    <div class="search-table-list" *ngIf="listEmployee.length > 0">
+      <table mat-table [dataSource]="dataSource" class="mat-elevation-z8">
+        <ng-container matColumnDef="name">
+          <th mat-header-cell *matHeaderCellDef> Nome</th>
+          <td mat-cell *matCellDef="let element">{{ element.name }}</td>
+        </ng-container>
+        <ng-container matColumnDef="cpf">
+          <th mat-header-cell *matHeaderCellDef> CPF</th>
+          <td mat-cell *matCellDef="let element">{{ element.cpf | cpfCnpj }}</td>
+        </ng-container>
+        <ng-container matColumnDef="cellPhone">
+          <th mat-header-cell *matHeaderCellDef> Celular</th>
+          <td mat-cell *matCellDef="let element">{{ element.cellPhone | phone }}</td>
+        </ng-container>
+        <ng-container matColumnDef="isVeterinarian">
+          <th mat-header-cell *matHeaderCellDef> Veterinario</th>
+          <td mat-cell *matCellDef="let element" >
+            <mat-checkbox [disabled]="true" [checked]="element.isVeterinarian"></mat-checkbox>
+          </td>
+        </ng-container>
+        <ng-container matColumnDef="actions">
+          <th mat-header-cell *matHeaderCellDef>Ações</th>
+          <td mat-cell *matCellDef="let element">
+            <mat-icon
+              color="primary"
+              class="cursorPointer"
+              matTooltip="Editar"
+              (click)="edit(element.id)">edit</mat-icon>
+            <mat-icon
+              color="warn"
+              class="cursorPointer"
+              matTooltip="Excluir"
+              (click)="delete(element)">delete</mat-icon>
+          </td>
+        </ng-container>
+
+        <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+        <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
+
+        <tr class="mat-row" *matNoDataRow>
+          <td class="mat-cell" colspan="5">Nenhuma informação combina com o filtro "{{input.value}}"</td>
+        </tr>
+      </table>
+    </div>
+  </mat-card-content>
+</mat-card>

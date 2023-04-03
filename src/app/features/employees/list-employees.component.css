@@ -1,0 +1,10 @@
+.cursorPointer {
+  cursor: pointer;
+}
+
+.centerMatCell {
+  text-align: center;
+  justify-content: center !important;
+}
+
+

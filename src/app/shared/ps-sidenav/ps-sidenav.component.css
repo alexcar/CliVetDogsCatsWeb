@@ -1,0 +1,32 @@
+.toolbar-item-spacer {
+  flex: 1 1 auto;
+}
+
+.app-container {
+  height: 90%;
+  margin: 0;
+}
+
+.app-sidenav {
+  width: 220px;
+}
+
+.app-sidenav-content {
+  display: flex;
+  height: 100%;
+  align-items: center;
+  justify-content: center;
+}
+
+.app-sidenav-content-1 {
+  display: flex;
+  height: 100%;
+  width: 100%;
+  /* align-items: start;
+  margin-top: 10px;
+  margin-left: 20px; */
+}
+
+.home {
+  cursor: pointer
+}

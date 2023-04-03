@@ -1,1 +1,193 @@
 /* You can add global styles to this file, and also import other style files */
+
+html, body { height: 100%; }
+body { margin: 0; font-family: Roboto, "Helvetica Neue", sans-serif; }
+
+.content-card {
+  /* display: flex; */
+  /* align-items: start; */
+  width: 100%;
+  height: 100%;
+  /* max-width: 800px;
+  max-height: 600px; */
+}
+
+.main-card {
+  width: 90%;
+  margin: 15px;
+}
+
+.main-card-without-border {
+  border-style: solid !important;
+  border-width: medium !important;
+}
+
+.margin-card {
+  margin-top: 30px;
+}
+
+.search-full-width {
+  margin-right: 10px;
+  margin-bottom: 10px;
+  width: 300px;
+}
+
+.search-table-list {
+  margin-top: 10px;
+  width: 100%;
+}
+
+.form-error-message-width {
+  font-size: 10px;
+}
+
+.green-snackbar {
+  background: rgb(65, 252, 134) !important;
+  color: white !important;
+}
+
+.green-snackbar button {
+  background-color: rgb(65, 252, 134) !important;
+  color: white !important;
+  border: none !important;
+}
+
+.red-snackbar {
+  background-color: #F44336 !important;
+  color: white !important;
+}
+
+.red-snackbar button {
+  background-color: #F44336 !important;
+  color: white !important;
+  border: none !important;
+}
+
+.fail {
+  background-color: #F44336 !important;
+  color: aliceblue !important;
+}
+
+.sub-card {
+  margin-bottom: 15px;
+}
+
+.margin-right {
+  margin-right: 15px;
+}
+
+.sub-card-title {
+  font-size: 15px;
+  font-weight: 500;
+}
+
+.sub-card-content {
+  margin-top: 10px;
+}
+
+.width-field-10 {
+  width: 10%;
+  margin-right: 5px;
+  margin-bottom: 15px;
+}
+
+.width-field-15 {
+  width: 15%;
+  margin-right: 5px;
+  margin-bottom: 15px;
+}
+
+.width-field-18 {
+  width: 18%;
+  margin-right: 5px;
+  margin-bottom: 15px;
+}
+
+.width-field-20 {
+  width: 20%;
+  margin-right: 5px;
+  margin-bottom: 15px;
+}
+
+.width-field-40 {
+  width: 40%;
+  margin-right: 5px;
+  margin-bottom: 15px;
+}
+
+.width-field-50 {
+  width: 50%;
+  margin-right: 5px;
+  margin-bottom: 15px;
+}
+
+.width-field-60 {
+  width: 60%;
+  margin-right: 5px;
+  margin-bottom: 15px;
+}
+
+.width-field-70 {
+  width: 70%;
+  margin-right: 5px;
+  margin-bottom: 15px;
+}
+
+.width-field-80 {
+  width: 80%;
+  margin-right: 5px;
+  margin-bottom: 15px;
+}
+
+.width-field-100 {
+  width: 100%;
+  margin-bottom: 15px;
+}
+
+.example-section {
+  display: flex;
+  align-content: center;
+  align-items: center;
+  height: 60px;
+}
+
+.dutydays {
+  width: 135px;
+}
+
+.dutyHoursFrom {
+  width: 70px;
+  margin-right: 3px;
+}
+
+.dutyHoursTo {
+  width: 70px;
+}
+
+.aligin-button-right {
+  float: right;
+}
+
+/* Display spinner */
+.centerSpinner {
+  position: absolute;
+    top: 50%;
+    left: 50%;
+    -moz-transform: translateX(-50%) translateY(-50%);
+    -webkit-transform: translateX(-50%) translateY(-50%);
+    transform: translateX(-50%) translateY(-50%);
+}
+
+.overlaySpinner{
+  height:100vh;
+  width:100%;
+  background-color:rgba(0, 0, 0, 0.286);
+  z-index:    10;
+  top:        0;
+  left:       0;
+  position:   fixed;
+}
+
+.button-margin-right {
+  margin-right: 5px;
+}
