@@ -3,7 +3,7 @@
   "version": 1,
   "newProjectRoot": "projects",
   "projects": {
-    "PetShopDogsCatsWeb": {
+    "CliVetDogsCatsWeb": {
       "projectType": "application",
       "schematics": {},
       "root": "",
@@ -35,8 +35,8 @@
               "budgets": [
                 {
                   "type": "initial",
-                  "maximumWarning": "500kb",
-                  "maximumError": "1mb"
+                  "maximumWarning": "2mb",
+                  "maximumError": "5mb"
                 },
                 {
                   "type": "anyComponentStyle",
@@ -67,10 +67,10 @@
           "builder": "@angular-devkit/build-angular:dev-server",
           "configurations": {
             "production": {
-              "browserTarget": "PetShopDogsCatsWeb:build:production"
+              "browserTarget": "CliVetDogsCatsWeb:build:production"
             },
             "development": {
-              "browserTarget": "PetShopDogsCatsWeb:build:development"
+              "browserTarget": "CliVetDogsCatsWeb:build:development"
             }
           },
           "defaultConfiguration": "development"
@@ -78,7 +78,7 @@
         "extract-i18n": {
           "builder": "@angular-devkit/build-angular:extract-i18n",
           "options": {
-            "browserTarget": "PetShopDogsCatsWeb:build"
+            "browserTarget": "CliVetDogsCatsWeb:build"
           }
         },
         "test": {
