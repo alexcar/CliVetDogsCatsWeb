@@ -58,7 +58,7 @@
 
           <mat-form-field class="fill width-field-40">
             <mat-label>Valor de custo R$</mat-label>
-            <input matInput formControlName="costValue" mask="separator.2" />
+            <input matInput formControlName="costValue" mask="separator.2" thousandSeparator="." decimalMarker="," />
                 <mat-error *ngIf="f.get('costValue')?.hasError('required') && (f.get('costValue')?.dirty || f.get('costValue')?.touched)">
                   O campo custo é obrigatório
                 </mat-error>
@@ -74,11 +74,13 @@
 
           <mat-form-field class="fill width-field-40">
             <mat-label>Valor de venda R$</mat-label>
-            <input matInput formControlName="saleValue" mask="000,00" />
+            <input matInput formControlName="saleValue" mask="separator.2" thousandSeparator="." decimalMarker="," />
                 <mat-error *ngIf="f.get('saleValue')?.hasError('required') && (f.get('saleValue')?.dirty || f.get('saleValue')?.touched)">
                   O campo valo de venda é obrigatório
                 </mat-error>
           </mat-form-field>
+
+          <!-- <span>{{value | mask: 'separator': {thousandSeparator: ',', suffix: ' sm'}}</span> -->
 
           <mat-form-field class="fill width-field-40">
             <mat-label>Quantidade estoque</mat-label>

@@ -19,7 +19,7 @@ import { of } from 'rxjs';
   styleUrls: ['./list-products.component.css']
 })
 export class ListProductsComponent implements OnInit {
-  displayedColumns: string[] = ['name', 'brand', 'category', 'costValue', 'saleValue', 'actions'];
+  displayedColumns: string[] = ['name', 'category', 'brand', 'costValue', 'saleValue', 'actions'];
   dataSource: any;
   isValidFormSubmitted = false;
   listProduct: ListProduct[] = [];
@@ -123,6 +123,12 @@ export class ListProductsComponent implements OnInit {
               this.dataSource = this.listProduct.filter((value, key) => {
                 return value.id != element.id;
               });
+
+              this.listProduct = this.listProduct.filter((value, key) => {
+                return value.id != element.id;
+              });
+
+              this.dataSource = new MatTableDataSource(this.listProduct)
 
               this.snackBar.open(
                 `Produto ${element.name} excluído com sucesso!`, "OK",

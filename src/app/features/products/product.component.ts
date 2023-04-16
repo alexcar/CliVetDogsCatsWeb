@@ -77,6 +77,7 @@ export class ProductComponent {
     });
 
     this.productForm.get('brandId')?.disable();
+    this.productForm.get('saleValue')?.disable();
   }
 
   get f() { return this.productForm; }
@@ -89,9 +90,10 @@ export class ProductComponent {
     }
 
     this.showSpinner = true;
+    this.productForm.get('active')?.setValue(true);
 
     if (this.action == 'Adicionar') {
-      this.productService.addProduct(this.productForm.value)
+      this.productService.addProduct(this.productForm.getRawValue())
       .subscribe({
         next: (result) => {
           this.snackBar.open(
@@ -132,7 +134,7 @@ export class ProductComponent {
         }
       });
     } else {
-      this.productService.updateProduct(this.productForm.value)
+      this.productService.updateProduct(this.productForm.getRawValue())
       .subscribe({
         next: (result) => {
           this.productForm.patchValue(result);
