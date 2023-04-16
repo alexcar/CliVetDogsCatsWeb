@@ -113,7 +113,7 @@ export class ListEmployeesComponent implements OnInit {
   delete(element: any) {
     const dialogRef = this.dialog.open(DialogDataComponent, {
       data: {
-        message: `Confirma a exclusão do funcionário ${element.name}?`,
+        message: `Confirma a exclusão do(a) funcionário(a) ${element.name}?`,
       },
     });
 
@@ -129,7 +129,7 @@ export class ListEmployeesComponent implements OnInit {
               });
 
               this.snackBar.open(
-                `Funcionário ${element.name} excluído com sucesso!`, "OK",
+                `Funcionário(a) ${element.name} excluído com sucesso!`, "OK",
                 {
                   horizontalPosition: 'center',
                   verticalPosition: 'top'

@@ -1,1 +1,134 @@
-<p>supplier works!</p>
+<form [formGroup]="supplierForm" (ngSubmit)="onSubmit()" novalidate>
+  <mat-card class="mat-elevation-z0 main-card-without-border">
+    <mat-card-header>
+      <mat-card-title>{{ action }} Fornecedor</mat-card-title>
+    </mat-card-header>
+    <mat-card-content class="margin-card">
+
+      <mat-card class="sub-card">
+        <mat-card-header class="sub-card-title">
+          Dados Empresariais
+        </mat-card-header>
+        <mat-card-content class="sub-card-content">
+          <mat-form-field class="fill width-field-40">
+            <mat-label>Nome</mat-label>
+            <input matInput formControlName="name" maxlength="100" />
+                <mat-error *ngIf="f.get('name')?.hasError('required') && (f.get('name')?.dirty || f.get('name')?.touched)">
+                  O campo nome é obrigatório
+                </mat-error>
+          </mat-form-field>
+          <mat-form-field class="fill width-field-40">
+            <mat-label>Nome Fantasia</mat-label>
+            <input matInput formControlName="trade" maxlength="100" />
+                <mat-error *ngIf="f.get('trade')?.hasError('required') && (f.get('trade')?.dirty || f.get('trade')?.touched)">
+                  O campo nome fantasia é obrigatório
+                </mat-error>
+          </mat-form-field>
+          <mat-form-field class="fill width-field-40">
+            <mat-label>Contato</mat-label>
+            <input matInput formControlName="contact" maxlength="100" />
+                <mat-error *ngIf="f.get('contact')?.hasError('required') && (f.get('contact')?.dirty || f.get('contact')?.touched)">
+                  O campo contato é obrigatório
+                </mat-error>
+          </mat-form-field>
+          <mat-form-field class="fill width-field-40">
+            <mat-label>Email</mat-label>
+            <input matInput formControlName="email" maxlength="100" />
+                <mat-error *ngIf="f.get('email')?.hasError('required') && (f.get('email')?.dirty || f.get('email')?.touched)">
+                  O campo email é obrigatório
+                </mat-error>
+          </mat-form-field>
+          <mat-form-field class="fill width-field-40">
+            <mat-label>CNPJ</mat-label>
+            <input matInput formControlName="cnpj" maxlength="18" mask="00.000.000/0000-00" />
+            <mat-error *ngIf="f.get('cnpj')?.hasError('required') && (f.get('cnpj')?.dirty || f.get('cnpj')?.touched)">
+              O campo CNPJ é obrigatório
+            </mat-error>
+          </mat-form-field>
+          <mat-form-field class="fill width-field-40">
+            <mat-label>Telefone</mat-label>
+            <input matInput formControlName="phone" maxlength="14" mask="(00) 0000-0000" />
+          </mat-form-field>
+          <mat-form-field class="fill width-field-40">
+            <mat-label>Celular</mat-label>
+            <input matInput formControlName="cellPhone" maxlength="15" mask="(00) 00000-0000" />
+            <mat-error *ngIf="f.get('cellPhone')?.hasError('required') && (f.get('cellPhone')?.dirty || f.get('cellPhone')?.touched)">
+              O campo Celular é obrigatório
+            </mat-error>
+          </mat-form-field>
+          <mat-checkbox matInput formControlName="active">Ativo</mat-checkbox>
+        </mat-card-content>
+      </mat-card>
+
+      <mat-card class="sub-card" formGroupName="address">
+        <mat-card-header class="sub-card-title">
+          Endereço
+        </mat-card-header>
+        <mat-card-content class="sub-card-content">
+          <mat-form-field class="fill width-field-15">
+            <mat-label>CEP</mat-label>
+            <input matInput formControlName="zipCode" maxlength="9" mask="00000-000" />
+            <mat-error *ngIf="f.get('address.zipCode')?.hasError('required') && (f.get('address.zipCode')?.dirty || f.get('address.zipCode')?.touched)">
+              O campo CEP é obrigatório
+            </mat-error>
+          </mat-form-field>
+          <mat-form-field class="fill width-field-60">
+            <mat-label>Logradouro</mat-label>
+            <input matInput formControlName="streetAddress" maxlength="100" />
+            <mat-error *ngIf="f.get('address.streetAddress')?.hasError('required') && (f.get('address.streetAddress')?.dirty || f.get('address.streetAddress')?.touched)">
+              O campo Logradouro é obrigatório
+            </mat-error>
+          </mat-form-field>
+          <mat-form-field class="fill width-field-15">
+            <mat-label>Número</mat-label>
+            <input matInput formControlName="number" maxlength="7" />
+            <mat-error *ngIf="f.get('address.number')?.hasError('required') && (f.get('address.number')?.dirty || f.get('address.number')?.touched)">
+              O campo Número é obrigatório
+            </mat-error>
+          </mat-form-field>
+          <mat-form-field class="fill width-field-50">
+            <mat-label>Complemento</mat-label>
+            <input matInput formControlName="complement" maxlength="40" />
+          </mat-form-field>
+          <mat-form-field class="fill width-field-30">
+            <mat-label>Bairro</mat-label>
+            <input matInput formControlName="neighborhood" maxlength="30" />
+            <mat-error *ngIf="f.get('address.neighborhood')?.hasError('required') && (f.get('address.neighborhood')?.dirty || f.get('address.neighborhood')?.touched)">
+              O campo Bairro é obrigatório
+            </mat-error>
+          </mat-form-field>
+          <mat-form-field class="fill width-field-40">
+            <mat-label>Cidade</mat-label>
+            <input matInput formControlName="city" maxlength="30" />
+            <mat-error *ngIf="f.get('address.city')?.hasError('required') && (f.get('address.city')?.dirty || f.get('address.city')?.touched)">
+              O campo Cidade é obrigatório
+            </mat-error>
+          </mat-form-field>
+          <mat-form-field class="fill width-field-40">
+            <mat-label>Estado</mat-label>
+            <mat-select formControlName="state">
+                <mat-option *ngFor="let state of states" [value]="state.id">
+                  {{ state.name }}
+                </mat-option>
+            </mat-select>
+            <mat-error *ngIf="f.get('address.state')?.hasError('required') && (f.get('address.state')?.dirty || f.get('address.state')?.touched)">
+              O campo Estado é obrigatório
+            </mat-error>
+          </mat-form-field>
+        </mat-card-content>
+      </mat-card>
+
+      <div class="aligin-button-right">
+        <button type="button" mat-flat-button color="primary" (click)="cancelForm()" class="button-margin-right">Voltar</button>
+        <button type="submit" [disabled]="!supplierForm.valid" mat-flat-button color="primary">Enviar</button>
+      </div>
+
+    </mat-card-content>
+  </mat-card>
+</form>
+
+<div class="overlaySpinner" *ngIf="showSpinner">
+  <div class="centerSpinner">
+    <mat-spinner></mat-spinner>
+  </div>
+</div>

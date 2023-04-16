@@ -19,13 +19,19 @@ import { TutorComponent } from './features/tutores/tutor.component';
 
 const routes: Routes = [
   { path: '', component: DashboardComponent },
-  { path: 'list-products', component: ListProductsComponent },
-  { path: 'product', component: ProductComponent },
+
   { path: 'list-employeers', component: ListEmployeesComponent },
-  { path: 'employee/edit/:id', component: EmployeeComponent },
   { path: 'employee/add', component: EmployeeComponent },
+  { path: 'employee/edit/:id', component: EmployeeComponent },
+
   { path: 'list-suppliers', component: ListSuppliersComponent },
-  { path: 'supplier', component: SupplierComponent },
+  { path: 'supplier/add', component: SupplierComponent },
+  { path: 'supplier/edit/:id', component: SupplierComponent },
+
+  { path: 'list-products', component: ListProductsComponent },
+  { path: 'product/add', component: ProductComponent },
+  { path: 'product/edit/:id', component: ProductComponent },
+
   { path: 'list-stock-receipts', component: ListStockReceiptsComponent },
   { path: 'stock-receipt', component: StockReceiptComponent },
   { path: 'list-tutores', component: ListTutoresComponent },

@@ -1,1 +1,105 @@
-<p>product works!</p>
+<form [formGroup]="productForm" (ngSubmit)="onSubmit()" novalidate>
+  <mat-card class="mat-elevation-z0 main-card-without-border">
+    <mat-card-header>
+      <mat-card-title>{{ action }} Produto</mat-card-title>
+    </mat-card-header>
+    <mat-card-content class="margin-card">
+      <mat-card class="sub-card">
+        <mat-card-header class="sub-card-title">
+          Dados do Produto
+        </mat-card-header>
+        <mat-card-content class="sub-card-content">
+          <mat-form-field class="fill width-field-40">
+            <mat-label>Código</mat-label>
+            <input matInput formControlName="code" maxlength="100" />
+                <mat-error *ngIf="f.get('code')?.hasError('required') && (f.get('code')?.dirty || f.get('code')?.touched)">
+                  O campo código é obrigatório
+                </mat-error>
+          </mat-form-field>
+          <mat-form-field class="fill width-field-40">
+            <mat-label>Nome</mat-label>
+            <input matInput formControlName="name" maxlength="100" />
+                <mat-error *ngIf="f.get('name')?.hasError('required') && (f.get('name')?.dirty || f.get('name')?.touched)">
+                  O campo nome é obrigatório
+                </mat-error>
+          </mat-form-field>
+
+          <mat-form-field class="fill width-field-40">
+            <mat-label>Categoria</mat-label>
+            <mat-select formControlName="categoryId" [(value)]="selectedCategory">
+                <mat-option *ngFor="let category of categories" [value]="category.id">
+                  {{ category.name }}
+                </mat-option>
+            </mat-select>
+            <mat-error *ngIf="f.get('categoryId')?.hasError('required') && (f.get('categoryId')?.dirty || f.get('categoryId')?.touched)">
+              É obrigatório selecionar uma categoria
+            </mat-error>
+          </mat-form-field>
+
+          <mat-form-field class="fill width-field-40">
+            <mat-label>Marca</mat-label>
+            <mat-select formControlName="brandId" [(value)]="selectedBrand">
+                <mat-option *ngFor="let brand of brands" [value]="brand.id">
+                  {{ brand.name }}
+                </mat-option>
+            </mat-select>
+            <mat-error *ngIf="f.get('brandId')?.hasError('required') && (f.get('brandId')?.dirty || f.get('brandId')?.touched)">
+              É obrigatório selecionar uma marca
+            </mat-error>
+          </mat-form-field>
+
+          <mat-form-field class="fill width-field-80 textAreaHeight">
+            <mat-label>Descrição</mat-label>
+            <textarea matInput formControlName="description" maxlength="3000"></textarea>
+                <mat-error *ngIf="f.get('description')?.hasError('required') && (f.get('description')?.dirty || f.get('description')?.touched)">
+                  O campo descrição é obrigatório
+                </mat-error>
+          </mat-form-field>
+
+          <mat-form-field class="fill width-field-40">
+            <mat-label>Valor de custo R$</mat-label>
+            <input matInput formControlName="costValue" mask="separator.2" />
+                <mat-error *ngIf="f.get('costValue')?.hasError('required') && (f.get('costValue')?.dirty || f.get('costValue')?.touched)">
+                  O campo custo é obrigatório
+                </mat-error>
+          </mat-form-field>
+
+          <mat-form-field class="fill width-field-40">
+            <mat-label>Margem de lucro %</mat-label>
+            <input matInput formControlName="profitMargin" mask="00" />
+                <mat-error *ngIf="f.get('profitMargin')?.hasError('required') && (f.get('profitMargin')?.dirty || f.get('profitMargin')?.touched)">
+                  O campo margem de lucro é obrigatório
+                </mat-error>
+          </mat-form-field>
+
+          <mat-form-field class="fill width-field-40">
+            <mat-label>Valor de venda R$</mat-label>
+            <input matInput formControlName="saleValue" mask="000,00" />
+                <mat-error *ngIf="f.get('saleValue')?.hasError('required') && (f.get('saleValue')?.dirty || f.get('saleValue')?.touched)">
+                  O campo valo de venda é obrigatório
+                </mat-error>
+          </mat-form-field>
+
+          <mat-form-field class="fill width-field-40">
+            <mat-label>Quantidade estoque</mat-label>
+            <input matInput formControlName="stockQuantity" mask="0*" />
+                <mat-error *ngIf="f.get('stockQuantity')?.hasError('required') && (f.get('stockQuantity')?.dirty || f.get('stockQuantity')?.touched)">
+                  O campo quantidade de estoque é obrigatório
+                </mat-error>
+          </mat-form-field>
+
+        </mat-card-content>
+      </mat-card>
+      <div class="aligin-button-right">
+        <button type="button" mat-flat-button color="primary" (click)="cancelForm()" class="button-margin-right">Voltar</button>
+        <button type="submit" [disabled]="!productForm.valid" mat-flat-button color="primary">Enviar</button>
+      </div>
+    </mat-card-content>
+  </mat-card>
+</form>
+
+<div class="overlaySpinner" *ngIf="showSpinner">
+  <div class="centerSpinner">
+    <mat-spinner></mat-spinner>
+  </div>
+</div>

@@ -167,7 +167,7 @@ export class EmployeeComponent implements OnInit {
       .subscribe({
         next: (result) => {
           this.snackBar.open(
-            "Funcionário cadastrado com sucesso!", "OK",
+            "Funcionário(a) cadastrado com sucesso!", "OK",
             {
               horizontalPosition: 'center',
               verticalPosition: 'top'

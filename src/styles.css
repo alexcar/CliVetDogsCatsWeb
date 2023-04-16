@@ -109,6 +109,18 @@ body { margin: 0; font-family: Roboto, "Helvetica Neue", sans-serif; }
   margin-bottom: 15px;
 }
 
+.width-field-25 {
+  width: 25%;
+  margin-right: 5px;
+  margin-bottom: 15px;
+}
+
+.width-field-30 {
+  width: 30%;
+  margin-right: 5px;
+  margin-bottom: 15px;
+}
+
 .width-field-40 {
   width: 40%;
   margin-right: 5px;
@@ -190,4 +202,8 @@ body { margin: 0; font-family: Roboto, "Helvetica Neue", sans-serif; }
 
 .button-margin-right {
   margin-right: 5px;
+}
+
+.textAreaHeight {
+  height: 100px;
 }

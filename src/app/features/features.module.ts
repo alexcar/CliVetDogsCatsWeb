@@ -1,3 +1,4 @@
+import { DEFAULT_CURRENCY_CODE, LOCALE_ID, NgModule } from '@angular/core';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { NgxMaskDirective, NgxMaskPipe, provideNgxMask } from 'ngx-mask';
 
@@ -14,12 +15,16 @@ import { ListStockReceiptsComponent } from './stockReceipts/list-stock-receipts.
 import { ListSuppliersComponent } from './suppliers/list-suppliers.component';
 import { ListTutoresComponent } from './tutores/list-tutores.component';
 import { MaterialDesignModule } from './../material-design/material-design.module';
-import { NgModule } from '@angular/core';
 import { ProductComponent } from './products/product.component';
 import { SharedModule } from './../shared/shared.module';
 import { StockReceiptComponent } from './stockReceipts/stock-receipt.component';
 import { SupplierComponent } from './suppliers/supplier.component';
 import { TutorComponent } from './tutores/tutor.component';
+import localePt from '@angular/common/locales/pt';
+import {registerLocaleData} from '@angular/common';
+
+registerLocaleData(localePt, 'pt');
+
 
 @NgModule({
   declarations: [
@@ -48,6 +53,16 @@ import { TutorComponent } from './tutores/tutor.component';
     NgxMaskDirective,
     NgxMaskPipe
   ],
-  providers: [provideNgxMask()],
+  providers: [
+    provideNgxMask(),
+    {
+      provide: LOCALE_ID,
+      useValue: 'pt'
+    },
+    {
+      provide: DEFAULT_CURRENCY_CODE,
+      useValue: 'BRL'
+    }
+  ],
 })
 export class FeaturesModule { }
