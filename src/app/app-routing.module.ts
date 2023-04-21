@@ -33,7 +33,9 @@ const routes: Routes = [
   { path: 'product/edit/:id', component: ProductComponent },
 
   { path: 'list-stock-receipts', component: ListStockReceiptsComponent },
-  { path: 'stock-receipt', component: StockReceiptComponent },
+  { path: 'stock-receipt/add', component: StockReceiptComponent },
+  // { path: 'stock-receipt/edit/:id', component: StockReceiptComponent },
+
   { path: 'list-tutores', component: ListTutoresComponent },
   { path: 'tutor', component: TutorComponent },
   { path: 'list-animals', component: ListAnimalsComponent },

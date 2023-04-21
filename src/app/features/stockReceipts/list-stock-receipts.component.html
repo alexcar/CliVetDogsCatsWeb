@@ -1,1 +1,60 @@
-<p>list-stock-receipts works!</p>
+<mat-card class="main-card">
+  <mat-card-header>
+    <mat-card-title>Lista Entrada de Produtos</mat-card-title>
+  </mat-card-header>
+  <mat-card-content class="margin-card">
+    <mat-form-field class="fill width-field-30">
+      <mat-label>Filtro</mat-label>
+      <input matInput (keyup)="applyFilter($event)" #input>
+    </mat-form-field>
+
+    <div>
+      <button mat-raised-button
+        (click)="add()"
+        routerLinkActive="router-link-active"
+        color="primary">Adicionar</button>
+    </div>
+
+    <div class="overlaySpinner" *ngIf="showSpinner">
+      <div class="centerSpinner">
+        <mat-spinner></mat-spinner>
+      </div>
+    </div>
+
+    <div class="search-table-list" *ngIf="listProductEntryHeader.length == 0">
+      Nenhuma entrada de produto cadastrado
+    </div>
+
+    <div class="search-table-list" *ngIf="listProductEntryHeader.length > 0">
+      <table mat-table [dataSource]="dataSource" class="mat-elevation-z8">
+        <ng-container matColumnDef="code">
+          <th mat-header-cell *matHeaderCellDef> Código</th>
+          <td mat-cell *matCellDef="let element">{{ element.code }}</td>
+        </ng-container>
+        <ng-container matColumnDef="employeeName">
+          <th mat-header-cell *matHeaderCellDef> Funcionário</th>
+          <td mat-cell *matCellDef="let element">{{ element.employeeName }}</td>
+        </ng-container>
+        <ng-container matColumnDef="supplierName">
+          <th mat-header-cell *matHeaderCellDef> Fornecedor</th>
+          <td mat-cell *matCellDef="let element">{{ element.supplierName }}</td>
+        </ng-container>
+        <ng-container matColumnDef="date">
+          <th mat-header-cell *matHeaderCellDef> Data</th>
+          <td mat-cell *matCellDef="let element">{{ element.date }}</td>
+        </ng-container>
+        <ng-container matColumnDef="totalValue">
+          <th mat-header-cell *matHeaderCellDef> Valor</th>
+          <td mat-cell *matCellDef="let element">{{ element.totalValue | currency }}</td>
+        </ng-container>
+
+        <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+        <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
+
+        <tr class="mat-row" *matNoDataRow>
+          <td class="mat-cell" colspan="5">Nenhuma informação combina com o filtro "{{input.value}}"</td>
+        </tr>
+      </table>
+    </div>
+  </mat-card-content>
+</mat-card>

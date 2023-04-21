@@ -1,27 +1,29 @@
 import { HttpClient, HttpHeaders } from '@angular/common/http';
-import { Observable, catchError, delay, of, throwError } from 'rxjs';
+import { Observable, catchError, delay, throwError } from 'rxjs';
 
 import { Injectable } from '@angular/core';
-import { ListProduct } from '../interfaces/listProduct';
+import { ListProductEntryHeader } from '../interfaces/listProductEntryHeader';
 import { Product } from '../domain/product';
+import { ProductEntry } from '../domain/product-entry';
+import { ProductEntryHeader } from '../domain/product-entry-header';
 import { environment } from 'src/environments/environment';
 
 @Injectable({
   providedIn: 'root'
 })
-export class ProductService {
+export class ProductEntryService {
 
-  private apiUrl = `${environment.apiUrl}products`;
-  product! : Product;
+  private apiUrl = `${environment.apiUrl}productEntries`;
+  productEntry!: ProductEntry;
+
   httpOptions = {
     headers: new HttpHeaders({ 'Content-Type': 'application/json' })
   };
-  environment: any;
 
   constructor(private http: HttpClient) { }
 
-  getListProduct(): Observable<ListProduct[]> {
-    return this.http.get<ListProduct[]>(this.apiUrl)
+  getListProductEntryHeader(): Observable<ListProductEntryHeader[]> {
+    return this.http.get<ListProductEntryHeader[]>(this.apiUrl)
       .pipe(delay(2000),
         catchError(error => {
           let errorMessages: string[] = [];
@@ -39,8 +41,8 @@ export class ProductService {
       );
   }
 
-  getProductById(id: string): Observable<Product> {
-    return this.http.get<Product>(`${this.apiUrl}/${id}`)
+  getProductEntryHeaderById(id: string): Observable<ProductEntryHeader> {
+    return this.http.get<ProductEntryHeader>(`${this.apiUrl}/${id}`)
       .pipe(delay(2000),
         catchError(err => {
           let errorMessages: string[] = [];
@@ -58,27 +60,27 @@ export class ProductService {
       );
   }
 
-  getProductByCode(code: string): Observable<Product> {
-    return this.http.get<Product>(`${this.apiUrl}/${code}`)
-      .pipe(delay(2000),
-        catchError(err => {
+  addProductEntry(productEntryHeader: ProductEntryHeader): Observable<ProductEntryHeader> {
+    return this.http.post<ProductEntryHeader>(this.apiUrl, productEntryHeader, this.httpOptions)
+      .pipe(
+        catchError(error => {
           let errorMessages: string[] = [];
 
-          if (err.error !== undefined) {
-            err.error.forEach((item: any) => {
+          if (error.error != undefined) {
+            error.error.forEach((item: any) => {
               errorMessages.push(item.message);
             });
           } else {
-            errorMessages.push(err.message);
+            errorMessages.push(error.message);
           }
 
           return throwError(() => new Error(errorMessages.join('|')));
-      })
-    );
+        })
+      );
   }
 
-  addProduct(product: Product): Observable<Product> {
-    return this.http.post<Product>(this.apiUrl, product, this.httpOptions)
+  updateProductEntry(productEntryHeader: ProductEntryHeader): Observable<ProductEntryHeader> {
+    return this.http.put<ProductEntryHeader>(this.apiUrl, productEntryHeader, this.httpOptions)
       .pipe(
         catchError(error => {
           let errorMessages: string[] = [];
@@ -96,26 +98,7 @@ export class ProductService {
       );
   }
 
-  updateProduct(product: Product): Observable<Product> {
-    return this.http.put<Product>(this.apiUrl, product, this.httpOptions)
-      .pipe(
-        catchError(error => {
-          let errorMessages: string[] = [];
-
-          if (error.error !== undefined) {
-            error.error.forEach((item: any) => {
-              errorMessages.push(item.message);
-            });
-          } else {
-            errorMessages.push(error.message);
-          }
-
-          return throwError(() => new Error(errorMessages.join('|')));
-        })
-      );
-  }
-
-  deleteProduct(id: string): Observable<any> {
+  deleteProductEntry(id: string): Observable<any> {
     return this.http.delete(`${this.apiUrl}/${id}`, this.httpOptions)
     .pipe(
       catchError(error => {

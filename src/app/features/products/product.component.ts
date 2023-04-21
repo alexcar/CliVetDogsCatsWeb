@@ -224,7 +224,7 @@ export class ProductComponent {
       });
   }
 
-  getCategories(selectedCategoryId: string | null) {
+  getCategories(selectedCategoryId: string | null): void {
     this.categoryService.getAll()
       .subscribe({
         next: (result) => {
@@ -336,6 +336,7 @@ export class ProductComponent {
         complete: () => {
           this.showSpinner = false;
         }
-      });
+      }
+    );
   }
 }
