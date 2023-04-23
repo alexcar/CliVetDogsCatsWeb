@@ -1,1 +1,89 @@
-<p>stock-receipt works!</p>
+
+  <mat-card class="mat-elevation-z0 main-card-without-border">
+    <mat-card-header>
+      <mat-card-title>{{ action }} Entrada de Produtos</mat-card-title>
+    </mat-card-header>
+    <mat-card-content class="margin-card">
+      <mat-card class="sub-card">
+        <mat-card-header class="sub-card-title">
+          Dados da Entrada de Produtos
+        </mat-card-header>
+        <mat-card-content class="sub-card-content">
+          <form [formGroup]="productEntryHeaderForm" (ngSubmit)="onSubmit()" novalidate>
+            <mat-form-field class="fill width-field-40">
+              <mat-label>Código de entrada</mat-label>
+              <input matInput formControlName="code" maxlength="10" />
+                  <mat-error *ngIf="f.get('code')?.hasError('required') && (f.get('code')?.dirty || f.get('code')?.touched)">
+                    O campo código é obrigatório
+                  </mat-error>
+            </mat-form-field>
+            <mat-form-field class="fill width-field-40">
+              <mat-label>Fornecedor</mat-label>
+              <mat-select formControlName="supplierId" [(value)]="selectedSupplier">
+                  <mat-option *ngFor="let supplier of suppliers" [value]="supplier.id">
+                    {{ supplier.trade }}
+                  </mat-option>
+              </mat-select>
+              <mat-error *ngIf="f.get('supplierId')?.hasError('required') && (f.get('supplierId')?.dirty || f.get('supplierId')?.touched)">
+                É obrigatório selecionar um fornecedor
+              </mat-error>
+            </mat-form-field>
+          </form>
+          <mat-card class="sub-card">
+            <mat-card-header class="sub-card-title">
+              Produto
+            </mat-card-header>
+            <mat-card-content class="sub-card-content">
+              <mat-form-field class="fill width-field-40">
+                <mat-label>Código</mat-label>
+                <input matInput (keyup)="searchProductByCode($event)" [(ngModel)]="productCodeEntry.code" maxlength="10" />
+              </mat-form-field>
+              <mat-form-field class="fill width-field-40">
+                <mat-label>Nome</mat-label>
+                <input matInput [(ngModel)]="productCodeEntry.name" [disabled]="true" />
+              </mat-form-field>
+
+              <mat-form-field class="fill width-field-40">
+                <mat-label>Categoria</mat-label>
+                <input matInput [(ngModel)]="productCodeEntry.categoryName"  [disabled]="true" />
+              </mat-form-field>
+              <mat-form-field class="fill width-field-40">
+                <mat-label>Marca</mat-label>
+                <input matInput [(ngModel)]="productCodeEntry.brandName" [disabled]="true" />
+              </mat-form-field>
+
+              <mat-form-field class="fill width-field-20">
+                <mat-label>Custo R$</mat-label>
+                <input matInput [(ngModel)]="productCodeEntry.costValue" />
+              </mat-form-field>
+              <mat-form-field class="fill width-field-20">
+                <mat-label>Quantidade</mat-label>
+                <input matInput type="number" [(ngModel)]="productCodeEntry.quantity" />
+              </mat-form-field>
+              <mat-form-field class="fill width-field-20">
+                <mat-label>Total R$</mat-label>
+                <input matInput [disabled]="true" />
+              </mat-form-field>
+              <button mat-mini-fab color="primary" matTooltip="Adicionar"
+                [disabled]="disabledAddButton()">
+                <mat-icon>add</mat-icon>
+              </button>
+            </mat-card-content>
+          </mat-card>
+
+        </mat-card-content>
+      </mat-card>
+    </mat-card-content>
+  </mat-card>
+
+  <div class="overlaySpinner" *ngIf="showSpinner">
+    <div class="centerSpinner">
+      <mat-spinner></mat-spinner>
+    </div>
+  </div>
+
+  <pre>
+
+    {{ productCodeEntry | json}}
+    {{ disabledAddButton() }}
+  </pre>

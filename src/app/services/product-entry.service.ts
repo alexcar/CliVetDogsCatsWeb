@@ -4,6 +4,7 @@ import { Observable, catchError, delay, throwError } from 'rxjs';
 import { Injectable } from '@angular/core';
 import { ListProductEntryHeader } from '../interfaces/listProductEntryHeader';
 import { Product } from '../domain/product';
+import { ProductCodeEntry } from '../interfaces/productCodeEntry';
 import { ProductEntry } from '../domain/product-entry';
 import { ProductEntryHeader } from '../domain/product-entry-header';
 import { environment } from 'src/environments/environment';
@@ -43,6 +44,25 @@ export class ProductEntryService {
 
   getProductEntryHeaderById(id: string): Observable<ProductEntryHeader> {
     return this.http.get<ProductEntryHeader>(`${this.apiUrl}/${id}`)
+      .pipe(delay(2000),
+        catchError(err => {
+          let errorMessages: string[] = [];
+
+          if (err.error !== undefined) {
+            err.error.forEach((item: any) => {
+              errorMessages.push(item.message);
+            });
+          } else {
+            errorMessages.push(err.message);
+          }
+
+          return throwError(() => new Error(errorMessages.join('|')));
+        })
+      );
+  }
+
+  getProductEntryByCode(code: string): Observable<ProductCodeEntry> {
+    return this.http.get<ProductCodeEntry>(`${this.apiUrl}/${code}`)
       .pipe(delay(2000),
         catchError(err => {
           let errorMessages: string[] = [];

@@ -10,6 +10,8 @@ import { ListSupplier } from 'src/app/interfaces/listSupplier';
 import { MatDialog } from '@angular/material/dialog';
 import { MatTableDataSource } from '@angular/material/table';
 import { Product } from 'src/app/domain/product';
+import { ProductCodeEntry } from 'src/app/domain/product-code-entry';
+// import { ProductCodeEntry } from 'src/app/interfaces/productCodeEntry';
 import { ProductEntryHeader } from 'src/app/domain/product-entry-header';
 import { ProductEntryService } from 'src/app/services/product-entry.service';
 import { ProductService } from 'src/app/services/product.service';
@@ -37,6 +39,11 @@ export class StockReceiptComponent {
   displayedColumns: string[] = ['code', 'name', 'costValue', 'quantity', 'subTotal'];
   dataSource: any;
   listProductEntry: Product[] = [];
+  timeout: any = null;
+  // productCodeEntry?: ProductCodeEntry;
+  productCodeEntry = new ProductCodeEntry()
+
+  quantity = null;
 
   constructor(
     private route: ActivatedRoute,
@@ -61,7 +68,7 @@ export class StockReceiptComponent {
       this.action = "Editar";
     }
 
-    this.manageForm();
+    // this.manageForm();
   }
 
   getSuppliers(): void {
@@ -105,19 +112,22 @@ export class StockReceiptComponent {
   createForm(id: string | null): void {
     this.productEntryHeader = new ProductEntryHeader();
     this.productEntryHeader.employeeId = 'FF64CC2C-8489-4116-3899-08DB3C30BAF7';
+    this.productEntryHeader.active = true;
 
     if (id != null) {
       this.updateForm(id);
     }
 
     this.productEntryHeaderForm = this.fb.group({
-      // id: [this.productEntryHeader.id],
+      id: [this.productEntryHeader.id],
       code: [this.productEntryHeader.code, Validators.required],
       supplierId: [this.productEntryHeader.suppliedId, Validators.required],
       employeeId: [this.productEntryHeader.employeeId],
       active: [this.productEntryHeader.active]
     });
   }
+
+  get f() { return this.productEntryHeaderForm; }
 
   updateForm(id: string): void {
     this.showSpinner = true;
@@ -151,20 +161,65 @@ export class StockReceiptComponent {
       });
   }
 
+  onSubmit(): void {
+
+  }
+
   manageForm(): void {
 
   }
 
+  disabledAddButton(): boolean {
+    return (this.productCodeEntry.code == undefined || this.productCodeEntry.code == '') ||
+    (this.productCodeEntry.costValue == undefined || this.productCodeEntry.costValue == null || this.productCodeEntry.costValue == 0) ||
+    (this.productCodeEntry.quantity == undefined || this.productCodeEntry.quantity == null || this.productCodeEntry.quantity == 0);
+
+
+    // criar variáveis code e costValue paa ser usado com o [(ngModel)]
+    // habilitar ou não o botão Adicionar a partir das variáveis quantity, code e costValue.
+    // se apagar o campo code, limpar os campos referente ao produto pesquisado
+    // buscar o produto no database quando digitar o código.
+    // inserir e escluir os produtos na lista de produtos.
+    // gravar a entrada de produto no database.
+  }
+
+  searchProductByCode(event: any): void {
+    clearTimeout(this.timeout);
+    var $this = this;
+
+    this.timeout = setTimeout(function () {
+      if (event.keyCode != 13) {
+        // $this.executeListen(event.target.value);
+        $this.getProductByCode(event.target.value);
+      }
+    }, 1000);
+  }
+
+  private executeListen(value: string): void {
+    if (value == '') {
+      this.productCodeEntry = new ProductCodeEntry();
+      return;
+    }
+
+    alert(value);
+  }
+
   getProductByCode(code: string): void  {
+    if (code == '') {
+      this.productCodeEntry = new ProductCodeEntry();
+      return;
+    }
+
     this.showSpinner = true;
 
     this.productService.getProductByCode(code)
       .subscribe({
         next: (result) => {
-          this.product = result;
+          this.productCodeEntry = result;
         },
         error: (error) => {
           this.showSpinner = false;
+          this.productCodeEntry = new ProductCodeEntry();
 
           let configError: MatSnackBarConfig = {
             panelClass: 'red-snackbar',

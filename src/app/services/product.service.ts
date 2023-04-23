@@ -4,6 +4,7 @@ import { Observable, catchError, delay, of, throwError } from 'rxjs';
 import { Injectable } from '@angular/core';
 import { ListProduct } from '../interfaces/listProduct';
 import { Product } from '../domain/product';
+import { ProductCodeEntry } from '../domain/product-code-entry';
 import { environment } from 'src/environments/environment';
 
 @Injectable({
@@ -11,7 +12,7 @@ import { environment } from 'src/environments/environment';
 })
 export class ProductService {
 
-  private apiUrl = `${environment.apiUrl}products`;
+  private apiUrl = `${environment.apiUrl}productEntries`;
   product! : Product;
   httpOptions = {
     headers: new HttpHeaders({ 'Content-Type': 'application/json' })
@@ -58,8 +59,8 @@ export class ProductService {
       );
   }
 
-  getProductByCode(code: string): Observable<Product> {
-    return this.http.get<Product>(`${this.apiUrl}/${code}`)
+  getProductByCode(code: string): Observable<ProductCodeEntry> {
+    return this.http.get<ProductCodeEntry>(`${this.apiUrl}/getProductByCode/${code}`)
       .pipe(delay(2000),
         catchError(err => {
           let errorMessages: string[] = [];
