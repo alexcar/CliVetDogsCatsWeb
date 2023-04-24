@@ -3,8 +3,7 @@ import { Observable, catchError, delay, throwError } from 'rxjs';
 
 import { Injectable } from '@angular/core';
 import { ListProductEntryHeader } from '../interfaces/listProductEntryHeader';
-import { Product } from '../domain/product';
-import { ProductCodeEntry } from '../interfaces/productCodeEntry';
+import { ProductCodeEntry } from '../domain/product-code-entry';
 import { ProductEntry } from '../domain/product-entry';
 import { ProductEntryHeader } from '../domain/product-entry-header';
 import { environment } from 'src/environments/environment';
@@ -62,7 +61,7 @@ export class ProductEntryService {
   }
 
   getProductEntryByCode(code: string): Observable<ProductCodeEntry> {
-    return this.http.get<ProductCodeEntry>(`${this.apiUrl}/${code}`)
+    return this.http.get<ProductCodeEntry>(`${this.apiUrl}/getProductByCode/${code}`)
       .pipe(delay(2000),
         catchError(err => {
           let errorMessages: string[] = [];

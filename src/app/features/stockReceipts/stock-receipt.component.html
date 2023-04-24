@@ -53,21 +53,72 @@
               </mat-form-field>
 
               <mat-form-field class="fill width-field-20">
-                <mat-label>Custo R$</mat-label>
-                <input matInput [(ngModel)]="productCodeEntry.costValue" />
+                <mat-label>Custo</mat-label>
+                <input matInput [ngModel]="productCodeEntry.costValue | currency" />
               </mat-form-field>
               <mat-form-field class="fill width-field-20">
                 <mat-label>Quantidade</mat-label>
-                <input matInput type="number" [(ngModel)]="productCodeEntry.quantity" />
+                <input matInput type="number" (change)="calculateSubValue($event)" [(ngModel)]="productCodeEntry.quantity" />
               </mat-form-field>
               <mat-form-field class="fill width-field-20">
-                <mat-label>Total R$</mat-label>
-                <input matInput [disabled]="true" />
+                <mat-label>Total</mat-label>
+                <input matInput [ngModel]="productCodeEntry.subTotal | currency" [disabled]="true" />
               </mat-form-field>
               <button mat-mini-fab color="primary" matTooltip="Adicionar"
-                [disabled]="disabledAddButton()">
+                [disabled]="disabledAddButton()"
+                (click)="addProduct(productCodeEntry)">
                 <mat-icon>add</mat-icon>
               </button>
+            </mat-card-content>
+          </mat-card>
+
+          <mat-card class="sub-card">
+            <mat-card-header class="sub-card-title">
+              Lista de Produtos
+            </mat-card-header>
+            <mat-card-content class="sub-card-content">
+              <div class="search-table-list" *ngIf="listProductCodeEntry.length == 0">
+                Nenhum produto inserido
+              </div>
+
+              <div class="search-table-list" *ngIf="listProductCodeEntry.length > 0">
+                <table mat-table [dataSource]="dataSource" class="mat-elevation-z8">
+                  <ng-container matColumnDef="code">
+                    <th mat-header-cell *matHeaderCellDef> Código</th>
+                    <td mat-cell *matCellDef="let element">{{ element.code }}</td>
+                  </ng-container>
+                  <ng-container matColumnDef="name">
+                    <th mat-header-cell *matHeaderCellDef> Nome</th>
+                    <td mat-cell *matCellDef="let element">{{ element.name }}</td>
+                  </ng-container>
+                  <ng-container matColumnDef="costValue">
+                    <th mat-header-cell *matHeaderCellDef> Custo</th>
+                    <td mat-cell *matCellDef="let element">{{ element.costValue | currency }}</td>
+                  </ng-container>
+                  <ng-container matColumnDef="quantity">
+                    <th mat-header-cell *matHeaderCellDef> Quantidade</th>
+                    <td mat-cell *matCellDef="let element">{{ element.quantity }}</td>
+                  </ng-container>
+                  <ng-container matColumnDef="subTotal">
+                    <th mat-header-cell *matHeaderCellDef> Sub Total</th>
+                    <td mat-cell *matCellDef="let element">{{ element.subTotal | currency }}</td>
+                  </ng-container>
+                  <ng-container matColumnDef="actions">
+                    <th mat-header-cell *matHeaderCellDef>Ação</th>
+                    <td mat-cell *matCellDef="let element">
+                      <mat-icon
+                        color="warn"
+                        class="cursorPointer"
+                        matTooltip="excluir"
+                        (click)="removeProduct(element)">delete</mat-icon>
+                    </td>
+                  </ng-container>
+
+                  <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+                  <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
+
+                </table>
+              </div>
             </mat-card-content>
           </mat-card>
 

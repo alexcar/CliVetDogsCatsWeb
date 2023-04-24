@@ -4,14 +4,12 @@ import { MatSnackBar, MatSnackBarConfig } from '@angular/material/snack-bar';
 
 import { Component } from '@angular/core';
 import { DialogDataComponent } from 'src/app/shared/dialog-data/dialog-data.component';
-import { Employee } from './../../domain/employee';
-import { ListProduct } from 'src/app/interfaces/listProduct';
+import { ListProductEntry } from 'src/app/interfaces/list-product-entry';
 import { ListSupplier } from 'src/app/interfaces/listSupplier';
 import { MatDialog } from '@angular/material/dialog';
 import { MatTableDataSource } from '@angular/material/table';
 import { Product } from 'src/app/domain/product';
 import { ProductCodeEntry } from 'src/app/domain/product-code-entry';
-// import { ProductCodeEntry } from 'src/app/interfaces/productCodeEntry';
 import { ProductEntryHeader } from 'src/app/domain/product-entry-header';
 import { ProductEntryService } from 'src/app/services/product-entry.service';
 import { ProductService } from 'src/app/services/product.service';
@@ -36,12 +34,13 @@ export class StockReceiptComponent {
   suppliers: ListSupplier[] = [];
   selectedSupplier: string | null = null;
 
-  displayedColumns: string[] = ['code', 'name', 'costValue', 'quantity', 'subTotal'];
+  displayedColumns: string[] = ['code', 'name', 'costValue', 'quantity', 'subTotal', 'actions'];
   dataSource: any;
-  listProductEntry: Product[] = [];
+  // listProductEntry: Product[] = [];
   timeout: any = null;
-  // productCodeEntry?: ProductCodeEntry;
-  productCodeEntry = new ProductCodeEntry()
+  productCodeEntry = new ProductCodeEntry();
+  listProductCodeEntry: ProductCodeEntry[] = [];
+
 
   quantity = null;
 
@@ -50,7 +49,6 @@ export class StockReceiptComponent {
     private router: Router,
     private fb: FormBuilder,
     private productEntryService: ProductEntryService,
-    private productService: ProductService,
     private supplierService: SupplierService,
     private snackBar: MatSnackBar,
     private dialog: MatDialog,
@@ -170,15 +168,16 @@ export class StockReceiptComponent {
   }
 
   disabledAddButton(): boolean {
+
+    const foo = this.f.get('code')?.value;
+    const bar = this.f.get('supplierId')?.value;
+
+
     return (this.productCodeEntry.code == undefined || this.productCodeEntry.code == '') ||
     (this.productCodeEntry.costValue == undefined || this.productCodeEntry.costValue == null || this.productCodeEntry.costValue == 0) ||
-    (this.productCodeEntry.quantity == undefined || this.productCodeEntry.quantity == null || this.productCodeEntry.quantity == 0);
+    (this.productCodeEntry.quantity == undefined || this.productCodeEntry.quantity == null || this.productCodeEntry.quantity == 0) ||
+    (this.f.get('code')?.value == null || this.f.get('code')?.value == '' || this.f.get('supplierId')?.value == null);
 
-
-    // criar variáveis code e costValue paa ser usado com o [(ngModel)]
-    // habilitar ou não o botão Adicionar a partir das variáveis quantity, code e costValue.
-    // se apagar o campo code, limpar os campos referente ao produto pesquisado
-    // buscar o produto no database quando digitar o código.
     // inserir e escluir os produtos na lista de produtos.
     // gravar a entrada de produto no database.
   }
@@ -189,19 +188,20 @@ export class StockReceiptComponent {
 
     this.timeout = setTimeout(function () {
       if (event.keyCode != 13) {
-        // $this.executeListen(event.target.value);
         $this.getProductByCode(event.target.value);
       }
     }, 1000);
   }
 
-  private executeListen(value: string): void {
-    if (value == '') {
-      this.productCodeEntry = new ProductCodeEntry();
-      return;
-    }
+  calculateSubValue(event: any): void {
+    clearTimeout(this.timeout);
+    var $this = this;
 
-    alert(value);
+    this.timeout = setTimeout(function () {
+      if (event.keyCode != 13 || event.target.value != '' || event.target.value != null) {
+        $this.productCodeEntry.subTotal = $this.productCodeEntry.costValue * event.target.value;
+      }
+    }, 1000);
   }
 
   getProductByCode(code: string): void  {
@@ -212,7 +212,7 @@ export class StockReceiptComponent {
 
     this.showSpinner = true;
 
-    this.productService.getProductByCode(code)
+    this.productEntryService.getProductEntryByCode(code)
       .subscribe({
         next: (result) => {
           this.productCodeEntry = result;
@@ -242,29 +242,31 @@ export class StockReceiptComponent {
     );
   }
 
-  addProduct(product: Product): void {
-    this.listProductEntry.push(product);
-    this.dataSource = new MatTableDataSource(this.listProductEntry);
+  addProduct(productCodeEntry: ProductCodeEntry): void {
+    this.listProductCodeEntry.push(productCodeEntry);
+    this.dataSource = new MatTableDataSource(this.listProductCodeEntry);
+    this.productCodeEntry = new ProductCodeEntry();
   }
 
-  removeProduct(product: Product): void {
+  removeProduct(productCodeEntry: ProductCodeEntry): void {
     const dialogRef = this.dialog.open(DialogDataComponent, {
       data: {
-        message: `Confirma a exclusão do produto ${product.name}?`,
+        message: `Confirma a exclusão do produto ${productCodeEntry.name}?`,
       },
     });
 
     dialogRef.afterClosed().subscribe( result => {
       if (result === true) {
-        this.dataSource = this.listProductEntry.filter((value, key) => {
-          return value.id != product.id;
+        this.dataSource = this.listProductCodeEntry.filter((value, key) => {
+          return value.id != productCodeEntry.id;
         });
 
-        this.listProductEntry = this.listProductEntry.filter((value, key) => {
-          return value.id != product.id;
+        this.listProductCodeEntry = this.listProductCodeEntry.filter((value, key) => {
+          return value.id != productCodeEntry.id;
         });
 
-        this.dataSource = new MatTableDataSource(this.listProductEntry)
+        this.dataSource = new MatTableDataSource(this.listProductCodeEntry)
+        this.productCodeEntry = new ProductCodeEntry();
       }
     });
   }

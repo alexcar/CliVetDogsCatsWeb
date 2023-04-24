@@ -6,4 +6,5 @@ export class ProductCodeEntry {
   public brandName!: string;
   public costValue!: number;
   public quantity!: number;
+  public subTotal!: number;
 }

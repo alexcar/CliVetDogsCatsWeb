@@ -12,7 +12,7 @@ import { environment } from 'src/environments/environment';
 })
 export class ProductService {
 
-  private apiUrl = `${environment.apiUrl}productEntries`;
+  private apiUrl = `${environment.apiUrl}products`;
   product! : Product;
   httpOptions = {
     headers: new HttpHeaders({ 'Content-Type': 'application/json' })
@@ -60,7 +60,7 @@ export class ProductService {
   }
 
   getProductByCode(code: string): Observable<ProductCodeEntry> {
-    return this.http.get<ProductCodeEntry>(`${this.apiUrl}/getProductByCode/${code}`)
+    return this.http.get<ProductCodeEntry>(`${this.apiUrl}/${code}`)
       .pipe(delay(2000),
         catchError(err => {
           let errorMessages: string[] = [];
