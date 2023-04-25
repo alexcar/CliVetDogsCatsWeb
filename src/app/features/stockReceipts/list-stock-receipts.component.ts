@@ -17,7 +17,7 @@ import { of } from 'rxjs';
   styleUrls: ['./list-stock-receipts.component.css']
 })
 export class ListStockReceiptsComponent implements OnInit {
-  displayedColumns: string[] = ['code', 'employee', 'supplier', 'date', 'transactionType', 'value'];
+  displayedColumns: string[] = ['code', 'employeeName', 'supplierName', 'transactionType', 'date',  'totalValue'];
   dataSource: any;
   listProductEntryHeader: ListProductEntryHeader[] = [];
   dialogData!: DialogData;

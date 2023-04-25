@@ -1,5 +1,6 @@
 
   <mat-card class="mat-elevation-z0 main-card-without-border">
+    <form [formGroup]="productEntryHeaderForm" (ngSubmit)="onSubmit()" novalidate>
     <mat-card-header>
       <mat-card-title>{{ action }} Entrada de Produtos</mat-card-title>
     </mat-card-header>
@@ -9,7 +10,6 @@
           Dados da Entrada de Produtos
         </mat-card-header>
         <mat-card-content class="sub-card-content">
-          <form [formGroup]="productEntryHeaderForm" (ngSubmit)="onSubmit()" novalidate>
             <mat-form-field class="fill width-field-25">
               <mat-label>Código de entrada</mat-label>
               <input matInput formControlName="code" maxlength="10" />
@@ -42,7 +42,6 @@
                 É obrigatório selecionar um fornecedor
               </mat-error>
             </mat-form-field>
-          </form>
           <mat-card class="sub-card">
             <mat-card-header class="sub-card-title">
               Produto
@@ -50,37 +49,39 @@
             <mat-card-content class="sub-card-content">
               <mat-form-field class="fill width-field-40">
                 <mat-label>Código</mat-label>
-                <input matInput (keyup)="searchProductByCode($event)" [(ngModel)]="productCodeEntry.code" maxlength="10" />
+                <input matInput (keyup)="searchProductByCode($event)" formControlName="productCode" maxlength="10" />
               </mat-form-field>
               <mat-form-field class="fill width-field-40">
                 <mat-label>Nome</mat-label>
-                <input matInput [(ngModel)]="productCodeEntry.name" [disabled]="true" />
+                <input matInput formControlName="productName" />
               </mat-form-field>
 
               <mat-form-field class="fill width-field-40">
                 <mat-label>Categoria</mat-label>
-                <input matInput [(ngModel)]="productCodeEntry.categoryName"  [disabled]="true" />
+                <input matInput formControlName="productCategory" />
               </mat-form-field>
               <mat-form-field class="fill width-field-40">
                 <mat-label>Marca</mat-label>
-                <input matInput [(ngModel)]="productCodeEntry.brandName" [disabled]="true" />
+                <input matInput formControlName="productBrand" />
               </mat-form-field>
 
               <mat-form-field class="fill width-field-20">
                 <mat-label>Custo</mat-label>
-                <input matInput [ngModel]="productCodeEntry.costValue | currency" />
+                <input matInput
+                  formControlName="productCostValue"
+                  mask="separator.2" thousandSeparator="." decimalMarker="," />
               </mat-form-field>
               <mat-form-field class="fill width-field-20">
                 <mat-label>Quantidade</mat-label>
-                <input matInput type="number" (change)="calculateSubValue($event)" [(ngModel)]="productCodeEntry.quantity" />
+                <input matInput type="number" formControlName="productQuantity" (change)="calculateSubValueByQuantity($event)" />
               </mat-form-field>
               <mat-form-field class="fill width-field-20">
                 <mat-label>Total</mat-label>
-                <input matInput [ngModel]="productCodeEntry.subTotal | currency" [disabled]="true" />
+                <input matInput formControlName="productSubTotal" [value]="f.get('productSubTotal')?.value | currency:'':''" />
               </mat-form-field>
-              <button mat-mini-fab color="primary" matTooltip="Adicionar"
+              <button type="button" mat-mini-fab color="primary" matTooltip="Adicionar"
                 [disabled]="disabledAddButton()"
-                (click)="addProduct(productCodeEntry)">
+                (click)="addProduct()">
                 <mat-icon>add</mat-icon>
               </button>
             </mat-card-content>
@@ -143,17 +144,10 @@
         <button type="submit" [disabled]="listProductCodeEntry.length == 0" mat-flat-button color="primary">Enviar</button>
       </div>
     </mat-card-content>
+  </form>
   </mat-card>
-
   <div class="overlaySpinner" *ngIf="showSpinner">
     <div class="centerSpinner">
       <mat-spinner></mat-spinner>
     </div>
   </div>
-
-  <pre>
-
-    {{ productCodeEntry | json}}
-    {{ disabledAddButton() }}
-    {{ listProductCodeEntry.length }}
-  </pre>

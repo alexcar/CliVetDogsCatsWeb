@@ -2,9 +2,8 @@ import { ActivatedRoute, Router } from '@angular/router';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { MatSnackBar, MatSnackBarConfig } from '@angular/material/snack-bar';
 
-import { Component } from '@angular/core';
+import { Component, Inject, LOCALE_ID } from '@angular/core';
 import { DialogDataComponent } from 'src/app/shared/dialog-data/dialog-data.component';
-import { ListProductEntry } from 'src/app/interfaces/list-product-entry';
 import { ListSupplier } from 'src/app/interfaces/listSupplier';
 import { MatDialog } from '@angular/material/dialog';
 import { MatTableDataSource } from '@angular/material/table';
@@ -12,10 +11,10 @@ import { Product } from 'src/app/domain/product';
 import { ProductCodeEntry } from 'src/app/domain/product-code-entry';
 import { ProductEntryHeader } from 'src/app/domain/product-entry-header';
 import { ProductEntryService } from 'src/app/services/product-entry.service';
-import { ProductService } from 'src/app/services/product.service';
 import { SnackBarComponent } from 'src/app/shared/snack-bar/snack-bar.component';
 import { SupplierService } from 'src/app/services/supplier.service';
 import { of } from 'rxjs';
+import { ProductEntry } from 'src/app/domain/product-entry';
 
 @Component({
   selector: 'app-stock-receipt',
@@ -52,7 +51,7 @@ export class StockReceiptComponent {
     private supplierService: SupplierService,
     private snackBar: MatSnackBar,
     private dialog: MatDialog,
-  ) {}
+    @Inject(LOCALE_ID) public locale: string,) {}
 
   ngOnInit(): void {
     this.getSuppliers();
@@ -66,7 +65,7 @@ export class StockReceiptComponent {
       this.action = "Editar";
     }
 
-    // this.manageForm();
+    this.manageForm();
   }
 
   getSuppliers(): void {
@@ -109,7 +108,7 @@ export class StockReceiptComponent {
 
   createForm(id: string | null): void {
     this.productEntryHeader = new ProductEntryHeader();
-    this.productEntryHeader.employeeId = 'FF64CC2C-8489-4116-3899-08DB3C30BAF7';
+    this.productEntryHeader.employeeId = '48bc4775-a2be-4179-efc7-08db3d07e2f2';
     this.productEntryHeader.active = true;
 
     if (id != null) {
@@ -119,10 +118,18 @@ export class StockReceiptComponent {
     this.productEntryHeaderForm = this.fb.group({
       id: [this.productEntryHeader.id],
       code: [this.productEntryHeader.code, Validators.required],
-      supplierId: [this.productEntryHeader.suppliedId, Validators.required],
+      supplierId: [this.productEntryHeader.supplierId, Validators.required],
       employeeId: [this.productEntryHeader.employeeId],
       transactionType: [this.productEntryHeader.transactionType, Validators.required],
-      active: [this.productEntryHeader.active]
+      active: [this.productEntryHeader.active],
+      productId: [this.productCodeEntry.id],
+      productCode: [this.productCodeEntry.code],
+      productName: [this.productCodeEntry.name],
+      productCategory: [this.productCodeEntry.categoryName],
+      productBrand: [this.productCodeEntry.brandName],
+      productCostValue: [this.productCodeEntry.costValue],
+      productQuantity: [this.productCodeEntry.quantity],
+      productSubTotal: [this.productCodeEntry.subTotal],
     });
   }
 
@@ -135,7 +142,7 @@ export class StockReceiptComponent {
       .subscribe({
         next: (result) => {
           this.productEntryHeaderForm.patchValue(result);
-          this.selectedSupplier = result.suppliedId;
+          this.selectedSupplier = result.supplierId;
         },
         error: (error) => {
           this.showSpinner = false;
@@ -161,7 +168,85 @@ export class StockReceiptComponent {
   }
 
   onSubmit(): void {
+    if (this.productEntryHeaderForm.invalid) {
+      return;
+    }
 
+    this.showSpinner = true;
+    let productEntryHeader = new ProductEntryHeader();
+
+    productEntryHeader.code = this.f.get('code')?.value;
+    productEntryHeader.employeeId = this.f.get('employeeId')?.value;
+    productEntryHeader.supplierId = this.f.get('supplierId')?.value;
+    productEntryHeader.transactionType = this.f.get('transactionType')?.value;
+    productEntryHeader.active = true;
+
+    this.listProductCodeEntry.forEach(item => {
+      let productEntry = new ProductEntry();
+
+      productEntry.productId = item.id;
+      productEntry.quantity = item.quantity;
+      productEntry.costValue = item.costValue;
+
+      productEntryHeader.productsEntry.push(productEntry);
+    });
+
+    this.productEntryService.addProductEntry(productEntryHeader)
+      .subscribe({
+        next: (result) => {
+          this.snackBar.open(
+            "Entrada de Produtos cadastrado com sucesso!", "OK",
+            {
+              horizontalPosition: 'center',
+              verticalPosition: 'top'
+            });
+
+          this.onReset();
+        },
+        error: (error) => {
+          this.showSpinner = false;
+          let duration: number = 5000;
+          let errorMessages: string[] = [];
+          errorMessages = error.message.split('|');
+
+          if (errorMessages.length > 5) {
+            duration = 10000;
+          }
+
+          let configError: MatSnackBarConfig = {
+            panelClass: 'red-snackbar',
+            duration: duration,
+            horizontalPosition: 'center',
+            verticalPosition: 'top'
+          };
+
+          this.snackBar.openFromComponent(SnackBarComponent, {
+            data: error.message.split('|'),
+            ...configError
+          });
+
+          return of([])
+        },
+        complete: () => {
+          this.showSpinner = false;
+        }
+      });
+  }
+
+  onReset(): void {
+    this.submitted = false;
+    this.productEntryHeaderForm.reset();
+
+    this.f.get('code')?.clearValidators();
+    this.f.get('code')?.updateValueAndValidity();
+
+    this.f.get('transactionType')?.clearValidators();
+    this.f.get('transactionType')?.updateValueAndValidity();
+
+    this.f.get('supplierId')?.clearValidators();
+    this.f.get('supplierId')?.updateValueAndValidity();
+
+    this.listProductCodeEntry = [] = [];
   }
 
   cancelForm(): void {
@@ -169,13 +254,30 @@ export class StockReceiptComponent {
   }
 
   manageForm(): void {
+    this.f.get('productName')?.disable();
+    this.f.get('productCategory')?.disable();
+    this.f.get('productBrand')?.disable();
+    this.f.get('productSubTotal')?.disable();
 
+    this.f.get('productCostValue')?.valueChanges.subscribe(
+      value => {
+        this.f.get('productSubTotal')?.setValue('');
+
+        if (value != null && value != '' && this.f.get('productQuantity')?.value != 0) {
+          const subTotal = value * this.f.get('productQuantity')?.value;
+          this.f.get('productSubTotal')?.setValue(subTotal);
+
+          this.productCodeEntry.quantity = this.f.get('productQuantity')?.value;
+          this.productCodeEntry.costValue = this.f.get('productCostValue')?.value;
+        }
+      }
+    )
   }
 
   disabledAddButton(): boolean {
-    return (this.productCodeEntry.code == undefined || this.productCodeEntry.code == '') ||
-    (this.productCodeEntry.costValue == undefined || this.productCodeEntry.costValue == null || this.productCodeEntry.costValue == 0) ||
-    (this.productCodeEntry.quantity == undefined || this.productCodeEntry.quantity == null || this.productCodeEntry.quantity == 0) ||
+    return (this.f.get('productCode')?.value == null || this.f.get('productCode')?.value == '') ||
+    (this.f.get('productCostValue')?.value == null || this.f.get('productCostValue')?.value == null || this.f.get('productCostValue')?.value == 0) ||
+    (this.f.get('productQuantity')?.value == null || this.f.get('productQuantity')?.value == '' || this.f.get('productQuantity')?.value == 0) ||
     (this.f.get('code')?.value == null || this.f.get('code')?.value == '' || this.f.get('supplierId')?.value == null
       || this.f.get('transactionType')?.value == null);
 
@@ -194,13 +296,14 @@ export class StockReceiptComponent {
     }, 1000);
   }
 
-  calculateSubValue(event: any): void {
+  calculateSubValueByQuantity(event: any): void {
     clearTimeout(this.timeout);
     var $this = this;
 
     this.timeout = setTimeout(function () {
       if (event.keyCode != 13 || event.target.value != '' || event.target.value != null) {
-        $this.productCodeEntry.subTotal = $this.productCodeEntry.costValue * event.target.value;
+        const subTotal = $this.f.get('productCostValue')?.value * event.target.value;
+        $this.f.get('productSubTotal')?.setValue(subTotal);
       }
     }, 1000);
   }
@@ -217,6 +320,13 @@ export class StockReceiptComponent {
       .subscribe({
         next: (result) => {
           this.productCodeEntry = result;
+          this.f.get('productId')?.setValue(this.productCodeEntry.id);
+          this.f.get('productCode')?.setValue(this.productCodeEntry.code);
+          this.f.get('productName')?.setValue(this.productCodeEntry.name);
+          this.f.get('productCategory')?.setValue(this.productCodeEntry.categoryName);
+          this.f.get('productBrand')?.setValue(this.productCodeEntry.brandName);
+          this.f.get('productCostValue')?.setValue(this.productCodeEntry.costValue);
+          this.f.get('productQuantity')?.setValue(this.productCodeEntry.quantity);
         },
         error: (error) => {
           this.showSpinner = false;
@@ -243,10 +353,29 @@ export class StockReceiptComponent {
     );
   }
 
-  addProduct(productCodeEntry: ProductCodeEntry): void {
+  addProduct(): void {
+    let productCodeEntry = new ProductCodeEntry();
+
+    productCodeEntry.id = this.f.get('productId')?.value;
+    productCodeEntry.code = this.f.get('productCode')?.value;
+    productCodeEntry.name = this.f.get('productName')?.value;
+    productCodeEntry.categoryName = this.f.get('productCategory')?.value;
+    productCodeEntry.brandName = this.f.get('productBrand')?.value;
+    productCodeEntry.costValue = this.f.get('productCostValue')?.value;
+    productCodeEntry.quantity = this.f.get('productQuantity')?.value;
+    productCodeEntry.subTotal = this.f.get('productSubTotal')?.value;
+
     this.listProductCodeEntry.push(productCodeEntry);
     this.dataSource = new MatTableDataSource(this.listProductCodeEntry);
-    this.productCodeEntry = new ProductCodeEntry();
+
+    this.f.get('productId')?.setValue(undefined);
+    this.f.get('productCode')?.setValue(undefined);
+    this.f.get('productName')?.setValue('');
+    this.f.get('productCategory')?.setValue('');
+    this.f.get('productBrand')?.setValue('');
+    this.f.get('productCostValue')?.setValue('');
+    this.f.get('productQuantity')?.setValue('');
+    this.f.get('productSubTotal')?.setValue('');
   }
 
   removeProduct(productCodeEntry: ProductCodeEntry): void {

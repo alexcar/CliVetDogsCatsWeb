@@ -286,9 +286,8 @@ export class ProductComponent {
 
     this.f.get('costValue')?.valueChanges.subscribe(
       value => {
-        this.f.get('saleValue')?.setValue('');
-
         if (value != null && value != '' && this.f.get('profitMargin')?.value != 0) {
+          this.f.get('saleValue')?.setValue('');
           const profitMarginValue = (value * this.f.get('profitMargin')?.value) / 100;
           const final = value + profitMarginValue;
           this.f.get('saleValue')?.setValue(final);

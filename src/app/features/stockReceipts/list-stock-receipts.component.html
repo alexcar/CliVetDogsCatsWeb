@@ -45,7 +45,7 @@
         </ng-container>
         <ng-container matColumnDef="date">
           <th mat-header-cell *matHeaderCellDef> Data</th>
-          <td mat-cell *matCellDef="let element">{{ element.date }}</td>
+          <td mat-cell *matCellDef="let element">{{ element.date | date: 'dd/MM/yyyy' }}</td>
         </ng-container>
         <ng-container matColumnDef="totalValue">
           <th mat-header-cell *matHeaderCellDef> Valor</th>
