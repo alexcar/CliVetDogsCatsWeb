@@ -6,11 +6,12 @@ import { Brand } from 'src/app/domain/brand';
 import { BrandService } from 'src/app/services/brand.service';
 import { Category } from 'src/app/domain/category';
 import { CategoryService } from 'src/app/services/category.service';
-import { Component } from '@angular/core';
+import { Component, Inject, LOCALE_ID } from '@angular/core';
 import { Product } from 'src/app/domain/product';
 import { ProductService } from 'src/app/services/product.service';
 import { SnackBarComponent } from 'src/app/shared/snack-bar/snack-bar.component';
 import { of } from 'rxjs';
+import { CurrencyPipe, formatCurrency } from '@angular/common';
 
 @Component({
   selector: 'app-product',
@@ -38,7 +39,8 @@ export class ProductComponent {
     private productService: ProductService,
     private categoryService: CategoryService,
     private brandService: BrandService,
-    private snackBar: MatSnackBar,) { }
+    private snackBar: MatSnackBar,
+    @Inject(LOCALE_ID) public locale: string,) { }
 
   ngOnInit(): void {
     this.getCategories(null);
@@ -197,7 +199,12 @@ export class ProductComponent {
     this.productService.getProductById(id)
       .subscribe({
         next: (result) => {
+          // formatCurrency(result.costValue, this.locale, '');
+          // const foo = Math.round((result.costValue + Number.EPSILON) * 100) / 100
+          // result.costValue = result.costValue.toFixed(2);
+
           this.productForm.patchValue(result);
+          // this.f.get('costValue')?.setValue(Math.round(result.costValue * 100) / 100);
           this.selectedCategory = result.categoryId;
           this.getBrands(result.categoryId, result.brandId);
         },
@@ -277,21 +284,39 @@ export class ProductComponent {
       }
     )
 
+    this.f.get('costValue')?.valueChanges.subscribe(
+      value => {
+        this.f.get('saleValue')?.setValue('');
+
+        if (value != null && value != '' && this.f.get('profitMargin')?.value != 0) {
+          const profitMarginValue = (value * this.f.get('profitMargin')?.value) / 100;
+          const final = value + profitMarginValue;
+          this.f.get('saleValue')?.setValue(final);
+        }
+      }
+    )
+
     this.f.get('profitMargin')?.valueChanges.subscribe(
       value => {
+        this.f.get('saleValue')?.setValue('');
 
-        const foo = this.f.get('costValue')?.value; // '10000'
-        if (value != null && this.f.get('costValue')?.value != 0) {
+        if (value != null && value != '' && this.f.get('costValue')?.value != 0) {
           const profitMarginValue = (this.f.get('costValue')?.value * value) / 100;
           const final = this.f.get('costValue')?.value + profitMarginValue;
           this.f.get('saleValue')?.setValue(final);
         }
-        else {
-          this.f.get('saleValue')?.setValue('');
-        }
       }
     )
+
+    // this.f.get('saleValue')?.valueChanges.subscribe(
+    //   value => {
+    //     const curr = formatCurrency(value, this.locale, '');
+    //     this.f.get('saleValue')?.setValue(curr);
+    //   }
+    // )
   }
+
+
 
   getBrands(categoryId: string, selectedBrandId: string | null) {
     this.showSpinner = true;

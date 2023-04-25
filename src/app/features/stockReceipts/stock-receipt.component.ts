@@ -121,6 +121,7 @@ export class StockReceiptComponent {
       code: [this.productEntryHeader.code, Validators.required],
       supplierId: [this.productEntryHeader.suppliedId, Validators.required],
       employeeId: [this.productEntryHeader.employeeId],
+      transactionType: [this.productEntryHeader.transactionType, Validators.required],
       active: [this.productEntryHeader.active]
     });
   }
@@ -163,20 +164,20 @@ export class StockReceiptComponent {
 
   }
 
+  cancelForm(): void {
+    this.router.navigateByUrl('list-stock-receipts');
+  }
+
   manageForm(): void {
 
   }
 
   disabledAddButton(): boolean {
-
-    const foo = this.f.get('code')?.value;
-    const bar = this.f.get('supplierId')?.value;
-
-
     return (this.productCodeEntry.code == undefined || this.productCodeEntry.code == '') ||
     (this.productCodeEntry.costValue == undefined || this.productCodeEntry.costValue == null || this.productCodeEntry.costValue == 0) ||
     (this.productCodeEntry.quantity == undefined || this.productCodeEntry.quantity == null || this.productCodeEntry.quantity == 0) ||
-    (this.f.get('code')?.value == null || this.f.get('code')?.value == '' || this.f.get('supplierId')?.value == null);
+    (this.f.get('code')?.value == null || this.f.get('code')?.value == '' || this.f.get('supplierId')?.value == null
+      || this.f.get('transactionType')?.value == null);
 
     // inserir e escluir os produtos na lista de produtos.
     // gravar a entrada de produto no database.

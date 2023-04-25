@@ -3,6 +3,7 @@ export interface ListProductEntryHeader {
   code: string;
   employeeName: string;
   supplierName: string;
+  transactionType: string;
   date: Date;
   totalValue: number;
 }

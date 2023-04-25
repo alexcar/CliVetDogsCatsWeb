@@ -6,5 +6,6 @@ export class ProductEntryHeader {
   public employeeId!: string;
   public suppliedId!: string;
   public productsEntry!: ProductEntry[];
+  public transactionType!: string;
   public active!: boolean;
 }

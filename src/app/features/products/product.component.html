@@ -74,7 +74,7 @@
 
           <mat-form-field class="fill width-field-40">
             <mat-label>Valor de venda R$</mat-label>
-            <input matInput formControlName="saleValue" mask="separator.2" thousandSeparator="." decimalMarker="," />
+            <input matInput formControlName="saleValue" [value]="f.get('saleValue')?.value | currency:'':''" mask="separator.2" thousandSeparator="." decimalMarker="," />
                 <mat-error *ngIf="f.get('saleValue')?.hasError('required') && (f.get('saleValue')?.dirty || f.get('saleValue')?.touched)">
                   O campo valo de venda é obrigatório
                 </mat-error>

@@ -10,14 +10,28 @@
         </mat-card-header>
         <mat-card-content class="sub-card-content">
           <form [formGroup]="productEntryHeaderForm" (ngSubmit)="onSubmit()" novalidate>
-            <mat-form-field class="fill width-field-40">
+            <mat-form-field class="fill width-field-25">
               <mat-label>Código de entrada</mat-label>
               <input matInput formControlName="code" maxlength="10" />
                   <mat-error *ngIf="f.get('code')?.hasError('required') && (f.get('code')?.dirty || f.get('code')?.touched)">
                     O campo código é obrigatório
                   </mat-error>
             </mat-form-field>
-            <mat-form-field class="fill width-field-40">
+            <mat-form-field class="fill width-field-25">
+              <mat-label>Tipo</mat-label>
+              <mat-select formControlName="transactionType">
+                  <mat-option value="+">
+                    Entrada de estoque
+                  </mat-option>
+                  <mat-option value="-">
+                    Saída de estoque
+                  </mat-option>
+              </mat-select>
+              <mat-error *ngIf="f.get('transactionType')?.hasError('required') && (f.get('transactionType')?.dirty || f.get('transactionType')?.touched)">
+                É obrigatório selecionar um tipo
+              </mat-error>
+            </mat-form-field>
+            <mat-form-field class="fill width-field-25">
               <mat-label>Fornecedor</mat-label>
               <mat-select formControlName="supplierId" [(value)]="selectedSupplier">
                   <mat-option *ngFor="let supplier of suppliers" [value]="supplier.id">
@@ -124,6 +138,10 @@
 
         </mat-card-content>
       </mat-card>
+      <div class="aligin-button-right">
+        <button type="button" mat-flat-button color="primary" (click)="cancelForm()" class="button-margin-right">Voltar</button>
+        <button type="submit" [disabled]="listProductCodeEntry.length == 0" mat-flat-button color="primary">Enviar</button>
+      </div>
     </mat-card-content>
   </mat-card>
 
@@ -137,4 +155,5 @@
 
     {{ productCodeEntry | json}}
     {{ disabledAddButton() }}
+    {{ listProductCodeEntry.length }}
   </pre>
