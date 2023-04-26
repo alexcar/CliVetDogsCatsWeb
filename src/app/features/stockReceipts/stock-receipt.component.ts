@@ -32,15 +32,15 @@ export class StockReceiptComponent {
   showSpinner = false;
   suppliers: ListSupplier[] = [];
   selectedSupplier: string | null = null;
+  selectedTransactionType: string | null = null
 
   displayedColumns: string[] = ['code', 'name', 'costValue', 'quantity', 'subTotal', 'actions'];
+  // displayedColumns: string[] = ['code', 'name', 'costValue', 'quantity', 'subTotal'];
   dataSource: any;
   // listProductEntry: Product[] = [];
   timeout: any = null;
   productCodeEntry = new ProductCodeEntry();
   listProductCodeEntry: ProductCodeEntry[] = [];
-
-
   quantity = null;
 
   constructor(
@@ -62,7 +62,7 @@ export class StockReceiptComponent {
     if (this.id == null) {
       this.action = "Adicionar";
     } else {
-      this.action = "Editar";
+      this.action = "Visualizar";
     }
 
     this.manageForm();
@@ -112,7 +112,7 @@ export class StockReceiptComponent {
     this.productEntryHeader.active = true;
 
     if (id != null) {
-      this.updateForm(id);
+      this.view(id);
     }
 
     this.productEntryHeaderForm = this.fb.group({
@@ -135,7 +135,7 @@ export class StockReceiptComponent {
 
   get f() { return this.productEntryHeaderForm; }
 
-  updateForm(id: string): void {
+  view(id: string): void {
     this.showSpinner = true;
 
     this.productEntryService.getProductEntryHeaderById(id)
@@ -143,6 +143,28 @@ export class StockReceiptComponent {
         next: (result) => {
           this.productEntryHeaderForm.patchValue(result);
           this.selectedSupplier = result.supplierId;
+          this.selectedTransactionType = result.transactionTypeId;
+
+          this.f.get('code')?.disable();
+          this.f.get('transactionType')?.disable();
+          this.f.get('supplierId')?.disable();
+
+          result.productsEntry.forEach(element => {
+            let productCodeEntry = new ProductCodeEntry();
+
+            productCodeEntry.id = element.id;
+            productCodeEntry.code = element.code;
+            productCodeEntry.name = element.name;
+            productCodeEntry.costValue = Number(element.costValue);
+            productCodeEntry.quantity = Number(element.quantity);
+            productCodeEntry.subTotal = Number(element.subTotal);
+
+            this.listProductCodeEntry.push(productCodeEntry);
+          });
+
+          this.displayedColumns.pop();
+
+          this.dataSource = new MatTableDataSource(this.listProductCodeEntry);
         },
         error: (error) => {
           this.showSpinner = false;
@@ -376,6 +398,12 @@ export class StockReceiptComponent {
     this.f.get('productCostValue')?.setValue('');
     this.f.get('productQuantity')?.setValue('');
     this.f.get('productSubTotal')?.setValue('');
+  }
+
+  getTotal(): number {
+    // const foo = this.listProductCodeEntry.map(x => x.subTotal).reduce((acc, value) => acc + value, 0);
+    return this.listProductCodeEntry.map(x => x.subTotal).reduce((acc, value) => acc + value, 0);
+    // return 0;
   }
 
   removeProduct(productCodeEntry: ProductCodeEntry): void {

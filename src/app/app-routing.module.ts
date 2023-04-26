@@ -34,7 +34,7 @@ const routes: Routes = [
 
   { path: 'list-stock-receipts', component: ListStockReceiptsComponent },
   { path: 'stock-receipt/add', component: StockReceiptComponent },
-  // { path: 'stock-receipt/edit/:id', component: StockReceiptComponent },
+  { path: 'stock-receipt/details/:id', component: StockReceiptComponent },
 
   { path: 'list-tutores', component: ListTutoresComponent },
   { path: 'tutor', component: TutorComponent },

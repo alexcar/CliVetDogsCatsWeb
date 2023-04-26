@@ -1,10 +1,8 @@
-import { Component, OnInit } from '@angular/core';
+import { ChangeDetectorRef, Component, OnInit } from '@angular/core';
 import { MatSnackBar, MatSnackBarConfig, MatSnackBarHorizontalPosition, MatSnackBarVerticalPosition } from '@angular/material/snack-bar';
 
 import { DialogData } from 'src/app/shared/dialog-data/dialog-data';
-import { DialogDataComponent } from 'src/app/shared/dialog-data/dialog-data.component';
 import { ListProductEntryHeader } from 'src/app/interfaces/listProductEntryHeader';
-import { MatDialog } from '@angular/material/dialog';
 import { MatTableDataSource } from '@angular/material/table';
 import { ProductEntryService } from 'src/app/services/product-entry.service';
 import { Router } from '@angular/router';
@@ -14,11 +12,14 @@ import { of } from 'rxjs';
 @Component({
   selector: 'app-list-stock-receipts',
   templateUrl: './list-stock-receipts.component.html',
-  styleUrls: ['./list-stock-receipts.component.css']
+  styleUrls: ['./list-stock-receipts.component.css'],
 })
 export class ListStockReceiptsComponent implements OnInit {
-  displayedColumns: string[] = ['code', 'employeeName', 'supplierName', 'transactionType', 'date',  'totalValue'];
-  dataSource: any;
+  displayedColumns: string[] = ['code', 'employeeName', 'supplierName', 'transactionType', 'date',  'totalValue', 'action'];
+
+  // dataSource: any; [3]
+  dataSource!: MatTableDataSource<ListProductEntryHeader>;
+
   listProductEntryHeader: ListProductEntryHeader[] = [];
   dialogData!: DialogData;
 
@@ -30,7 +31,6 @@ export class ListStockReceiptsComponent implements OnInit {
     private service: ProductEntryService,
     private snackBar: MatSnackBar,
     private router: Router,
-    private dialog: MatDialog
   ) {}
 
   ngOnInit(): void {
@@ -87,6 +87,10 @@ export class ListStockReceiptsComponent implements OnInit {
 
   add(): void {
     this.router.navigateByUrl('stock-receipt/add');
+  }
+
+  details(id: string) {
+    this.router.navigateByUrl(`stock-receipt/details/${id}`);
   }
 
   // edit(id: string) {

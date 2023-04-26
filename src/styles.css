@@ -207,3 +207,7 @@ body { margin: 0; font-family: Roboto, "Helvetica Neue", sans-serif; }
 .textAreaHeight {
   height: 100px;
 }
+
+tr.mat-mdc-footer-row td {
+  font-weight: bold;
+}

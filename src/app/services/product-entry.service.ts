@@ -41,8 +41,8 @@ export class ProductEntryService {
       );
   }
 
-  getProductEntryHeaderById(id: string): Observable<ProductEntryHeader> {
-    return this.http.get<ProductEntryHeader>(`${this.apiUrl}/${id}`)
+  getProductEntryHeaderById(id: string): Observable<ListProductEntryHeader> {
+    return this.http.get<ListProductEntryHeader>(`${this.apiUrl}/${id}`)
       .pipe(delay(2000),
         catchError(err => {
           let errorMessages: string[] = [];
