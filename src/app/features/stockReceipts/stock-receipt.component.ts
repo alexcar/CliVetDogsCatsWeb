@@ -35,9 +35,10 @@ export class StockReceiptComponent {
   selectedTransactionType: string | null = null
 
   displayedColumns: string[] = ['code', 'name', 'costValue', 'quantity', 'subTotal', 'actions'];
-  // displayedColumns: string[] = ['code', 'name', 'costValue', 'quantity', 'subTotal'];
+
   dataSource: any;
-  // listProductEntry: Product[] = [];
+  // dataSource!: MatTableDataSource<ProductCodeEntry>;
+
   timeout: any = null;
   productCodeEntry = new ProductCodeEntry();
   listProductCodeEntry: ProductCodeEntry[] = [];

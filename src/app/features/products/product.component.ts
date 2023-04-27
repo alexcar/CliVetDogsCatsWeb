@@ -11,7 +11,6 @@ import { Product } from 'src/app/domain/product';
 import { ProductService } from 'src/app/services/product.service';
 import { SnackBarComponent } from 'src/app/shared/snack-bar/snack-bar.component';
 import { of } from 'rxjs';
-import { CurrencyPipe, formatCurrency } from '@angular/common';
 
 @Component({
   selector: 'app-product',

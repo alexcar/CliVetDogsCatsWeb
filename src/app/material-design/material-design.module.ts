@@ -12,6 +12,7 @@ import { MatListModule } from '@angular/material/list';
 import { MatMenuModule } from '@angular/material/menu';
 import { MatMomentDateModule } from '@angular/material-moment-adapter'
 import { MatNativeDateModule } from '@angular/material/core';
+import { MatPaginatorModule } from '@angular/material/paginator';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 import { MatSelectModule } from '@angular/material/select';
 import { MatSidenavModule } from '@angular/material/sidenav';
@@ -44,7 +45,8 @@ const modules = [
   MatNativeDateModule,
   MatMomentDateModule,
   MatProgressSpinnerModule,
-  MatDialogModule
+  MatDialogModule,
+  MatPaginatorModule,
 ]
 
 @NgModule({

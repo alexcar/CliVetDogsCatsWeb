@@ -1,10 +1,12 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, ViewChild } from '@angular/core';
 import { MatSnackBar, MatSnackBarConfig, MatSnackBarHorizontalPosition, MatSnackBarVerticalPosition } from '@angular/material/snack-bar';
 
 import { DialogData } from 'src/app/shared/dialog-data/dialog-data';
 import { DialogDataComponent } from 'src/app/shared/dialog-data/dialog-data.component';
 import { ListProduct } from 'src/app/interfaces/listProduct';
 import { MatDialog } from '@angular/material/dialog';
+import { MatPaginator } from '@angular/material/paginator';
+import { MatSort } from '@angular/material/sort';
 import { MatTableDataSource } from '@angular/material/table';
 import { NgForm } from '@angular/forms';
 import { ProductService } from 'src/app/services/product.service';
@@ -20,7 +22,12 @@ import { of } from 'rxjs';
 })
 export class ListProductsComponent implements OnInit {
   displayedColumns: string[] = ['name', 'category', 'brand', 'costValue', 'saleValue', 'actions'];
-  dataSource: any;
+  @ViewChild(MatPaginator) paginator!: MatPaginator;
+  @ViewChild(MatSort, {static: true}) sort!: MatSort;
+
+  // dataSource: any;
+  dataSource!: MatTableDataSource<ListProduct>;
+
   isValidFormSubmitted = false;
   listProduct: ListProduct[] = [];
   dialogData!: DialogData;
@@ -42,7 +49,12 @@ export class ListProductsComponent implements OnInit {
       .subscribe({
         next: (result) => {
           this.listProduct = result;
-          this.dataSource = new MatTableDataSource(this.listProduct)
+          this.dataSource = new MatTableDataSource<ListProduct>(this.listProduct)
+          this.dataSource.sort = this.sort;
+          this.dataSource.paginator = this.paginator;
+          this.paginator._intl.itemsPerPageLabel = "Itens por página";
+          this.paginator._intl.nextPageLabel = "Próxima página";
+          this.paginator._intl.previousPageLabel = "Página anterior";
         },
         error: (error) => {
           this.showSpinner = false;
@@ -96,6 +108,10 @@ export class ListProductsComponent implements OnInit {
   applyFilter(event: Event) {
     const filterValue = (event.target as HTMLInputElement).value;
     this.dataSource.filter = filterValue.trim().toLowerCase();
+
+    if (this.dataSource.paginator) {
+      this.dataSource.paginator.firstPage();
+    }
   }
 
   add(): void {
@@ -120,15 +136,24 @@ export class ListProductsComponent implements OnInit {
         this.service.deleteProduct(element.id)
           .subscribe({
             next: () => {
-              this.dataSource = this.listProduct.filter((value, key) => {
+              // this.dataSource = this.listProduct.filter((value, key) => {
+              //   return value.id != element.id;
+              // });
+
+              this.dataSource = new MatTableDataSource<ListProduct>(this.listProduct.filter((value, key) => {
                 return value.id != element.id;
-              });
+              }));
+              this.dataSource.sort = this.sort;
+
+              if (this.dataSource.paginator) {
+                this.dataSource.paginator.firstPage();
+              }
 
               this.listProduct = this.listProduct.filter((value, key) => {
                 return value.id != element.id;
               });
 
-              this.dataSource = new MatTableDataSource(this.listProduct)
+              // this.dataSource = new MatTableDataSource(this.listProduct)
 
               this.snackBar.open(
                 `Produto ${element.name} excluído com sucesso!`, "OK",

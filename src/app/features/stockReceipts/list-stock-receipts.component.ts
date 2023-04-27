@@ -1,8 +1,9 @@
-import { ChangeDetectorRef, Component, OnInit } from '@angular/core';
+import { Component, OnInit, ViewChild } from '@angular/core';
 import { MatSnackBar, MatSnackBarConfig, MatSnackBarHorizontalPosition, MatSnackBarVerticalPosition } from '@angular/material/snack-bar';
 
 import { DialogData } from 'src/app/shared/dialog-data/dialog-data';
 import { ListProductEntryHeader } from 'src/app/interfaces/listProductEntryHeader';
+import { MatPaginator } from '@angular/material/paginator';
 import { MatTableDataSource } from '@angular/material/table';
 import { ProductEntryService } from 'src/app/services/product-entry.service';
 import { Router } from '@angular/router';
@@ -16,6 +17,7 @@ import { of } from 'rxjs';
 })
 export class ListStockReceiptsComponent implements OnInit {
   displayedColumns: string[] = ['code', 'employeeName', 'supplierName', 'transactionType', 'date',  'totalValue', 'action'];
+  @ViewChild(MatPaginator) paginator!: MatPaginator;
 
   // dataSource: any; [3]
   dataSource!: MatTableDataSource<ListProductEntryHeader>;
@@ -26,6 +28,9 @@ export class ListStockReceiptsComponent implements OnInit {
   horizontalPosition: MatSnackBarHorizontalPosition = 'center';
   verticalPosition: MatSnackBarVerticalPosition = 'top';
   showSpinner = false;
+
+  nextPageLabel = "Próxima página";
+  previousPageLabel = "Página anterior";
 
   constructor(
     private service: ProductEntryService,
@@ -40,7 +45,11 @@ export class ListStockReceiptsComponent implements OnInit {
       .subscribe({
         next: (result) => {
           this.listProductEntryHeader = result;
-          this.dataSource = new MatTableDataSource(this.listProductEntryHeader)
+          this.dataSource = new MatTableDataSource<ListProductEntryHeader>(this.listProductEntryHeader);
+          this.dataSource.paginator = this.paginator;
+          this.paginator._intl.itemsPerPageLabel = "Itens por página";
+          this.paginator._intl.nextPageLabel = "Próxima página";
+          this.paginator._intl.previousPageLabel = "Página anterior";
         },
         error: (error) => {
           this.showSpinner = false;
@@ -92,72 +101,4 @@ export class ListStockReceiptsComponent implements OnInit {
   details(id: string) {
     this.router.navigateByUrl(`stock-receipt/details/${id}`);
   }
-
-  // edit(id: string) {
-  //   this.router.navigateByUrl(`stock-receipt/edit/${id}`);
-  // }
-
-  // delete(element: ListProductEntryHeader) {
-  //   const dialogRef = this.dialog.open(DialogDataComponent, {
-  //     data: {
-  //       message: `Confirma a exclusão da Entrada de Produto ${element.code}?`,
-  //     },
-  //   });
-
-  //   dialogRef.afterClosed().subscribe( result => {
-  //     if (result === true) {
-  //       this.showSpinner = true;
-
-  //       this.service.deleteProductEntry(element.id)
-  //         .subscribe({
-  //           next: () => {
-  //             this.dataSource = this.listProductEntryHeader.filter((value, key) => {
-  //               return value.id != element.id;
-  //             });
-
-  //             this.listProductEntryHeader = this.listProductEntryHeader.filter((value, key) => {
-  //               return value.id != element.id;
-  //             });
-
-  //             this.dataSource = new MatTableDataSource(this.listProductEntryHeader)
-
-  //             this.snackBar.open(
-  //               `Entrada de Produto ${element.code} excluído com sucesso!`, "OK",
-  //               {
-  //                 horizontalPosition: 'center',
-  //                 verticalPosition: 'top'
-  //               });
-  //           },
-  //           error: (error) => {
-  //             this.showSpinner = false;
-
-  //             let duration: number = 5000;
-  //             let errorMessages: string[] = [];
-  //             errorMessages = error.message.split('|');
-
-  //             if (errorMessages.length > 5) {
-  //               duration = 10000;
-  //             }
-
-  //             let configError: MatSnackBarConfig = {
-  //               panelClass: 'red-snackbar',
-  //               duration: duration,
-  //               horizontalPosition: 'center',
-  //               verticalPosition: 'top'
-  //             };
-
-  //             this.snackBar.openFromComponent(SnackBarComponent, {
-  //               data: error.message.split('|'),
-  //               ...configError
-  //             });
-
-  //             return of([])
-  //           },
-  //           complete: () => {
-  //             this.showSpinner = false;
-  //           }
-  //         });
-  //     }
-  //   });
-  // }
 }
