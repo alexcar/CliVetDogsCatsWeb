@@ -50,7 +50,6 @@ export class ListProductsComponent implements OnInit {
         next: (result) => {
           this.listProduct = result;
           this.dataSource = new MatTableDataSource<ListProduct>(this.listProduct)
-          this.dataSource.sort = this.sort;
           this.dataSource.paginator = this.paginator;
           this.paginator._intl.itemsPerPageLabel = "Itens por página";
           this.paginator._intl.nextPageLabel = "Próxima página";
@@ -140,20 +139,16 @@ export class ListProductsComponent implements OnInit {
               //   return value.id != element.id;
               // });
 
-              this.dataSource = new MatTableDataSource<ListProduct>(this.listProduct.filter((value, key) => {
-                return value.id != element.id;
-              }));
-              this.dataSource.sort = this.sort;
-
-              if (this.dataSource.paginator) {
-                this.dataSource.paginator.firstPage();
-              }
-
               this.listProduct = this.listProduct.filter((value, key) => {
                 return value.id != element.id;
               });
 
-              // this.dataSource = new MatTableDataSource(this.listProduct)
+              this.dataSource = new MatTableDataSource<ListProduct>(this.listProduct);
+              this.dataSource.paginator = this.paginator;
+              this.paginator._intl.itemsPerPageLabel = "Itens por página";
+              this.paginator._intl.nextPageLabel = "Próxima página";
+              this.paginator._intl.previousPageLabel = "Página anterior";
+
 
               this.snackBar.open(
                 `Produto ${element.name} excluído com sucesso!`, "OK",

@@ -109,7 +109,7 @@ export class StockReceiptComponent {
 
   createForm(id: string | null): void {
     this.productEntryHeader = new ProductEntryHeader();
-    this.productEntryHeader.employeeId = '48bc4775-a2be-4179-efc7-08db3d07e2f2';
+    this.productEntryHeader.employeeId = 'AF817980-0069-4D6A-7F20-08DB4BFB5302';
     this.productEntryHeader.active = true;
 
     if (id != null) {
