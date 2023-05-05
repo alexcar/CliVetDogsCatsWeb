@@ -1,18 +1,18 @@
 import { HttpClient, HttpHeaders } from '@angular/common/http';
-import { Observable, catchError, delay, of, throwError } from 'rxjs';
+import { Observable, catchError, delay, throwError } from 'rxjs';
 
 import { Injectable } from '@angular/core';
-import { ListSupplier } from '../interfaces/listSupplier';
-import { Supplier } from '../domain/supplier';
+import { ListTutor } from '../interfaces/list-tutor';
+import { Tutor } from '../domain/tutor';
 import { environment } from 'src/environments/environment';
 
 @Injectable({
   providedIn: 'root'
 })
-export class SupplierService {
+export class TutorService {
 
-  private apiUrl = `${environment.apiUrl}suppliers`;
-  supplier! : Supplier;
+  private apiUrl = `${environment.apiUrl}tutors`;
+  tutor! : Tutor;
   httpOptions = {
     headers: new HttpHeaders({ 'Content-Type': 'application/json' })
   };
@@ -20,8 +20,8 @@ export class SupplierService {
 
   constructor(private http: HttpClient) { }
 
-  getListSupplier(): Observable<ListSupplier[]> {
-    return this.http.get<ListSupplier[]>(this.apiUrl)
+  getListTutor(): Observable<ListTutor[]> {
+    return this.http.get<ListTutor[]>(this.apiUrl)
       .pipe(delay(2000),
         catchError(error => {
           let errorMessages: string[] = [];
@@ -39,8 +39,8 @@ export class SupplierService {
       );
   }
 
-  getSupplierById(id: string): Observable<Supplier> {
-    return this.http.get<Supplier>(`${this.apiUrl}/${id}`)
+  getTutorById(id: string): Observable<Tutor> {
+    return this.http.get<Tutor>(`${this.apiUrl}/${id}`)
       .pipe(delay(2000),
         catchError(err => {
           let errorMessages: string[] = [];
@@ -58,8 +58,8 @@ export class SupplierService {
       );
   }
 
-  addSupplier(supplier: Supplier): Observable<Supplier> {
-    return this.http.post<Supplier>(this.apiUrl, supplier, this.httpOptions)
+  addTutor(tutor: Tutor): Observable<Tutor> {
+    return this.http.post<Tutor>(this.apiUrl, tutor, this.httpOptions)
       .pipe(
         catchError(error => {
           let errorMessages: string[] = [];
@@ -77,8 +77,8 @@ export class SupplierService {
       );
   }
 
-  updateSupplier(supplier: Supplier): Observable<Supplier> {
-    return this.http.put<Supplier>(this.apiUrl, supplier, this.httpOptions)
+  updateTutor(tutor: Tutor): Observable<Tutor> {
+    return this.http.put<Tutor>(this.apiUrl, tutor, this.httpOptions)
       .pipe(
         catchError(error => {
           let errorMessages: string[] = [];
@@ -96,7 +96,7 @@ export class SupplierService {
       );
   }
 
-  deleteSupplier(id: string): Observable<any> {
+  deleteTutor(id: string): Observable<any> {
     return this.http.delete(`${this.apiUrl}/${id}`, this.httpOptions)
     .pipe(
       catchError(error => {
