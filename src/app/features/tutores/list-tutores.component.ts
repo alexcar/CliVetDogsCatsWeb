@@ -1,10 +1,12 @@
+import { Component, OnInit, ViewChild } from '@angular/core';
 import { MatSnackBar, MatSnackBarConfig, MatSnackBarHorizontalPosition, MatSnackBarVerticalPosition } from '@angular/material/snack-bar';
 
-import { Component } from '@angular/core';
 import { DialogData } from 'src/app/shared/dialog-data/dialog-data';
 import { DialogDataComponent } from 'src/app/shared/dialog-data/dialog-data.component';
 import { ListTutor } from 'src/app/interfaces/list-tutor';
 import { MatDialog } from '@angular/material/dialog';
+import { MatPaginator } from '@angular/material/paginator';
+import { MatSort } from '@angular/material/sort';
 import { MatTableDataSource } from '@angular/material/table';
 import { NgForm } from '@angular/forms';
 import { Router } from '@angular/router';
@@ -18,9 +20,15 @@ import { of } from 'rxjs';
   templateUrl: './list-tutores.component.html',
   styleUrls: ['./list-tutores.component.css']
 })
-export class ListTutoresComponent {
+export class ListTutoresComponent implements OnInit {
   displayedColumns: string[] = ['name', 'cpf', 'cellPhone', 'actions'];
-  dataSource: any;
+
+  @ViewChild(MatPaginator) paginator!: MatPaginator;
+  @ViewChild(MatSort, {static: true}) sort!: MatSort;
+
+  // dataSource: any;
+  dataSource!: MatTableDataSource<ListTutor>;
+
   isValidFormSubmitted = false;
   listTutor: ListTutor[] = [];
   dialogData!: DialogData;
@@ -42,7 +50,11 @@ export class ListTutoresComponent {
       .subscribe({
         next: (result) => {
           this.listTutor = result;
-          this.dataSource = new MatTableDataSource(this.listTutor)
+          this.dataSource = new MatTableDataSource<ListTutor>(this.listTutor)
+          this.dataSource.paginator = this.paginator;
+          this.paginator._intl.itemsPerPageLabel = "Itens por página";
+          this.paginator._intl.nextPageLabel = "Próxima página";
+          this.paginator._intl.previousPageLabel = "Página anterior";
         },
         error: (error) => {
           this.showSpinner = false;
@@ -98,6 +110,10 @@ export class ListTutoresComponent {
   applyFilter(event: Event) {
     const filterValue = (event.target as HTMLInputElement).value;
     this.dataSource.filter = filterValue.trim().toLowerCase();
+
+    if (this.dataSource.paginator) {
+      this.dataSource.paginator.firstPage();
+    }
   }
 
   add(): void {
@@ -122,9 +138,19 @@ export class ListTutoresComponent {
         this.service.deleteTutor(element.id)
           .subscribe({
             next: () => {
-              this.dataSource = this.listTutor.filter((value, key) => {
+              // this.dataSource = this.listTutor.filter((value, key) => {
+              //   return value.id != element.id;
+              // });
+
+              this.listTutor = this.listTutor.filter((value, key) => {
                 return value.id != element.id;
               });
+
+              this.dataSource = new MatTableDataSource<ListTutor>(this.listTutor);
+              this.dataSource.paginator = this.paginator;
+              this.paginator._intl.itemsPerPageLabel = "Itens por página";
+              this.paginator._intl.nextPageLabel = "Próxima página";
+              this.paginator._intl.previousPageLabel = "Página anterior";
 
               this.snackBar.open(
                 `Tutor ${element.name} excluído com sucesso!`, "OK",

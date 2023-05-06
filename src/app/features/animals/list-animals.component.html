@@ -1,1 +1,81 @@
-<p>list-animals works!</p>
+<mat-card class="main-card">
+  <mat-card-header>
+    <mat-card-title>Lista de Animais</mat-card-title>
+  </mat-card-header>
+  <mat-card-content class="margin-card">
+    <mat-form-field class="fill width-field-30">
+      <mat-label>Filtro</mat-label>
+      <input matInput (keyup)="applyFilter($event)" #input>
+    </mat-form-field>
+
+    <div>
+      <button mat-raised-button
+        (click)="add()"
+        routerLinkActive="router-link-active"
+        color="primary">Adicionar</button>
+    </div>
+
+    <div class="overlaySpinner" *ngIf="showSpinner">
+      <div class="centerSpinner">
+        <mat-spinner></mat-spinner>
+      </div>
+    </div>
+
+    <div class="search-table-list" *ngIf="listAnimal.length == 0">
+      Nenhum tutor cadastrado
+    </div>
+
+    <div class="search-table-list mat-elevation-z8">
+      <table mat-table [dataSource]="dataSource" matSort>
+        <ng-container matColumnDef="name">
+          <th mat-header-cell *matHeaderCellDef> Nome</th>
+          <td mat-cell *matCellDef="let element">{{ element.name }}</td>
+        </ng-container>
+        <ng-container matColumnDef="tutorName">
+          <th mat-header-cell *matHeaderCellDef> Tutor</th>
+          <td mat-cell *matCellDef="let element">{{ element.tutorName }}</td>
+        </ng-container>
+        <ng-container matColumnDef="species">
+          <th mat-header-cell *matHeaderCellDef> Espécie</th>
+          <td mat-cell *matCellDef="let element">{{ element.species }}</td>
+        </ng-container>
+        <ng-container matColumnDef="race">
+          <th mat-header-cell *matHeaderCellDef> Raça</th>
+          <td mat-cell *matCellDef="let element">{{ element.race }}</td>
+        </ng-container>
+        <ng-container matColumnDef="coat">
+          <th mat-header-cell *matHeaderCellDef> Pelagem</th>
+          <td mat-cell *matCellDef="let element">{{ element.coat }}</td>
+        </ng-container>
+        <ng-container matColumnDef="actions">
+          <th mat-header-cell *matHeaderCellDef>Ações</th>
+          <td mat-cell *matCellDef="let element">
+            <mat-icon
+              color="primary"
+              class="cursorPointer"
+              matTooltip="Editar"
+              (click)="edit(element.id)">edit</mat-icon>
+            <mat-icon
+              color="warn"
+              class="cursorPointer"
+              matTooltip="Excluir"
+              (click)="delete(element)">delete</mat-icon>
+          </td>
+        </ng-container>
+
+        <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+        <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
+
+        <tr class="mat-row" *matNoDataRow>
+          <td class="mat-cell" colspan="5">Nenhuma informação combina com o filtro "{{input.value}}"</td>
+        </tr>
+      </table>
+      <mat-paginator
+        [pageSizeOptions]="[5, 10, 20]"
+        [length]="listAnimal.length"
+        [pageSize]="5"
+        aria-label="Select page of periodic elements" role="img">
+      </mat-paginator>
+    </div>
+  </mat-card-content>
+</mat-card>

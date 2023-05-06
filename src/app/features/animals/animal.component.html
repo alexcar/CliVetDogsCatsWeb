@@ -1,1 +1,129 @@
-<p>animal works!</p>
+<form [formGroup]="animalForm" (ngSubmit)="onSubmit()" novalidate>
+  <mat-card class="mat-elevation-z0 main-card-without-border">
+    <mat-card-header>
+      <mat-card-title>{{ action }} Tutores</mat-card-title>
+    </mat-card-header>
+
+    <mat-card-content class="margin-card">
+      <mat-card class="sub-card">
+        <mat-card-header class="sub-card-title">
+          Tutor
+        </mat-card-header>
+        <mat-card-content class="sub-card-content">
+          <mat-form-field class="fill width-field-80">
+            <mat-label>Tutor</mat-label>
+            <mat-select matInput formControlName="tutorId">
+              <mat-option *ngFor="let tutor of tutors" [value]="tutor.id">
+                {{ tutor.name }}
+              </mat-option>
+            </mat-select>
+            <mat-error *ngIf="f.get('tutorId')?.hasError('required') && (f.get('tutorId')?.dirty || f.get('tutorId')?.touched)">
+              É obrigatório selecionar um Tutor
+            </mat-error>
+          </mat-form-field>
+        </mat-card-content>
+      </mat-card>
+
+      <mat-card class="sub-card">
+        <mat-card-header class="sub-card-title">
+          Dados do animal
+        </mat-card-header>
+        <mat-card-content class="sub-card-content">
+          <mat-form-field class="fill width-field-40">
+            <mat-label>Nome</mat-label>
+            <input matInput formControlName="name" maxlength="100" />
+                <mat-error *ngIf="f.get('name')?.hasError('required') && (f.get('name')?.dirty || f.get('name')?.touched)">
+                  O campo nome é obrigatório
+                </mat-error>
+          </mat-form-field>
+          <mat-form-field class="fill width-field-40">
+            <mat-label>Espécie</mat-label>
+            <mat-select matInput formControlName="speciesId">
+              <mat-option *ngFor="let specie of species" [value]="specie.id">
+                {{ specie.name }}
+              </mat-option>
+            </mat-select>
+            <mat-error *ngIf="f.get('speciesId')?.hasError('required') && (f.get('speciesId')?.dirty || f.get('speciesId')?.touched)">
+              É obrigatório selecionar uma Espécie
+            </mat-error>
+          </mat-form-field>
+
+          <mat-form-field class="fill width-field-40">
+            <mat-label>Raça</mat-label>
+            <mat-select matInput formControlName="raceId">
+              <mat-option *ngFor="let race of races" [value]="race.id">
+                {{ race.name }}
+              </mat-option>
+            </mat-select>
+            <mat-error *ngIf="f.get('raceId')?.hasError('required') && (f.get('raceId')?.dirty || f.get('raceId')?.touched)">
+              É obrigatório selecionar uma Raça
+            </mat-error>
+          </mat-form-field>
+          <mat-form-field class="fill width-field-40">
+            <mat-label>Pelagem</mat-label>
+            <input matInput formControlName="coat" maxlength="30" />
+                <mat-error *ngIf="f.get('coat')?.hasError('required') && (f.get('coat')?.dirty || f.get('coat')?.touched)">
+                  O campo pelagem é obrigatório
+                </mat-error>
+          </mat-form-field>
+
+          <mat-form-field class="fill width-field-40">
+            <mat-label>Porte</mat-label>
+            <mat-select matInput formControlName="animalSizeId">
+              <mat-option *ngFor="let animalSize of animalSizes" [value]="animalSize.id">
+                {{ animalSize.name }}
+              </mat-option>
+            </mat-select>
+            <mat-error *ngIf="f.get('animalSizeId')?.hasError('required') && (f.get('animalSizeId')?.dirty || f.get('animalSizeId')?.touched)">
+              É obrigatório selecionar o porte
+            </mat-error>
+          </mat-form-field>
+          <mat-form-field class="fill width-field-40">
+            <mat-label>Sexo</mat-label>
+            <mat-select matInput formControlName="sexoId">
+              <mat-option *ngFor="let gender of genders" [value]="gender.id">
+                {{ gender.name }}
+              </mat-option>
+            </mat-select>
+            <mat-error *ngIf="f.get('sexoId')?.hasError('required') && (f.get('sexoId')?.dirty || f.get('sexoId')?.touched)">
+              É obrigatório selecionar o sexo
+            </mat-error>
+          </mat-form-field>
+
+          <mat-form-field appearance="fill" class="margin-right width-field-40">
+            <mat-label>Data de nascimento</mat-label>
+            <input matInput [matDatepicker]="picker" formControlName="birthDate" [max]="maxDate">
+            <mat-datepicker-toggle matIconSuffix [for]="picker"></mat-datepicker-toggle>
+            <mat-datepicker #picker></mat-datepicker>
+            <mat-error *ngIf="f.get('birthDate')?.hasError('required') && (f.get('birthDate')?.dirty || f.get('birthDate')?.touched)">
+              O campo Data de nascimento é obrigatório
+            </mat-error>
+          </mat-form-field>
+          <mat-form-field appearance="fill" class="margin-right width-field-20">
+            <mat-label>Peso KG</mat-label>
+            <input matInput formControlName="weigth" maxlength="3" mask="999" />
+                <mat-error *ngIf="f.get('weigth')?.hasError('required') && (f.get('weigth')?.dirty || f.get('weigth')?.touched)">
+                  O campo peso é obrigatório
+                </mat-error>
+          </mat-form-field>
+          <mat-checkbox matInput formControlName="active">Ativo</mat-checkbox>
+
+          <mat-form-field appearance="fill" class="margin-right width-field-80">
+            <mat-label>Observações</mat-label>
+            <textarea matInput formControlName="comments"></textarea>
+          </mat-form-field>
+        </mat-card-content>
+      </mat-card>
+      <div class="aligin-button-right">
+        <button type="button" mat-flat-button color="primary" (click)="cancelForm()" class="button-margin-right">Voltar</button>
+        <button type="submit" [disabled]="!animalForm.valid" mat-flat-button color="primary">Enviar</button>
+      </div>
+    </mat-card-content>
+  </mat-card>
+</form>
+
+<div class="overlaySpinner" *ngIf="showSpinner">
+  <div class="centerSpinner">
+    <mat-spinner></mat-spinner>
+  </div>
+</div>

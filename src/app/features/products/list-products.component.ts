@@ -149,7 +149,6 @@ export class ListProductsComponent implements OnInit {
               this.paginator._intl.nextPageLabel = "Próxima página";
               this.paginator._intl.previousPageLabel = "Página anterior";
 
-
               this.snackBar.open(
                 `Produto ${element.name} excluído com sucesso!`, "OK",
                 {
