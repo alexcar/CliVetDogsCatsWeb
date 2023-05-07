@@ -316,7 +316,7 @@ export class ProductComponent {
 
 
 
-  getBrands(categoryId: string, selectedBrandId: string | null) {
+  getBrands(categoryId: string, selectedBrandId: string | null): void {
     this.showSpinner = true;
 
     this.brandService.getByCategoryId(categoryId)

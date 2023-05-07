@@ -71,6 +71,25 @@ export class EmployeeService {
     );
   }
 
+  getAllVet(): Observable<ListEmployee[]> {
+    return this.http.get<ListEmployee[]>(`${this.apiUrl}/getAllVet`)
+      .pipe(delay(2000),
+        catchError(error => {
+          let errorMessages: string[] = [];
+
+          if (error.error !== undefined) {
+            error.error.forEach((item: any) => {
+              errorMessages.push(item.message);
+            });
+          } else {
+            errorMessages.push(error.message);
+          }
+
+          return throwError(() => new Error(errorMessages.join('|')));
+        })
+      );
+  }
+
   addEmployee(employee: Employee): Observable<Employee> {
     return this.http.post<Employee>(this.apiUrl, employee, this.httpOptions)
       .pipe(

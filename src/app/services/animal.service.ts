@@ -58,6 +58,25 @@ export class AnimalService {
       );
   }
 
+  getByTutorId(id: string): Observable<ListAnimal[]> {
+    return this.http.get<ListAnimal[]>(`${this.apiUrl}/getByTutor/${id}`)
+      .pipe(delay(2000),
+        catchError(err => {
+          let errorMessages: string[] = [];
+
+          if (err.error !== undefined) {
+            err.error.forEach((item: any) => {
+              errorMessages.push(item.message);
+            });
+          } else {
+            errorMessages.push(err.message);
+          }
+
+          return throwError(() => new Error(errorMessages.join('|')));
+        })
+      );
+  }
+
   addAnimal(animal: Animal): Observable<Animal> {
     return this.http.post<Animal>(this.apiUrl, animal, this.httpOptions)
       .pipe(

@@ -380,7 +380,5 @@ export class AnimalComponent implements OnInit {
       this.f.get(name)?.clearValidators();
       this.f.get(name)?.updateValueAndValidity();
     }
-
-    const foo = this.animalForm.valid;
   }
 }

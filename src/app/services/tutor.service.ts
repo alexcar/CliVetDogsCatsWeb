@@ -58,6 +58,25 @@ export class TutorService {
       );
   }
 
+  GetAllTutorsHaveAnimal(): Observable<ListTutor[]> {
+    return this.http.get<ListTutor[]>(`${this.apiUrl}/getAllTutorsHaveAnimal`)
+      .pipe(delay(2000),
+        catchError(err => {
+          let errorMessages: string[] = [];
+
+          if (err.error !== undefined) {
+            err.error.forEach((item: any) => {
+              errorMessages.push(item.message);
+            });
+          } else {
+            errorMessages.push(err.message);
+          }
+
+          return throwError(() => new Error(errorMessages.join('|')));
+        })
+      );
+  }
+
   addTutor(tutor: Tutor): Observable<Tutor> {
     return this.http.post<Tutor>(this.apiUrl, tutor, this.httpOptions)
       .pipe(

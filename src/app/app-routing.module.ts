@@ -45,7 +45,9 @@ const routes: Routes = [
   { path: 'animal/edit/:id', component: AnimalComponent },
 
   { path: 'list-appointment-bookings', component: ListAppointmentBookingsComponent },
-  { path: 'appointment-booking', component: AppointmentBookingComponent },
+  { path: 'appointment-booking/add', component: AppointmentBookingComponent },
+  { path: 'appointment-booking/edit:id', component: AppointmentBookingComponent },
+
   { path: '**', redirectTo: '', pathMatch: 'full' }
 ];
 
