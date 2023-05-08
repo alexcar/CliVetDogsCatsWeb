@@ -1,3 +1,6 @@
+import { ScheduleProductSelected } from "./schedule-product-selected";
+import { ScheduleServiceSelected } from "./schedule-service-selected";
+
 export class Schedule {
   public id!: string;
   public scheduleDate!: Date;
@@ -9,4 +12,14 @@ export class Schedule {
   public employeeId!: string;
   public animalId!: string;
   public active!: boolean;
+  public serviceId!: string;
+  public serviceSaleValue!: number;
+  public serviceQuantity!: number;
+  public serviceTotalValue!: number;
+  public productId!: string;
+  public productSaleValue!: number;
+  public productQuantity!: number;
+  public productTotalValue!: number;
+  public scheduleServiceSelected: ScheduleServiceSelected[] = [];
+  public scheduleProductSelected: ScheduleProductSelected[] = [];
 }

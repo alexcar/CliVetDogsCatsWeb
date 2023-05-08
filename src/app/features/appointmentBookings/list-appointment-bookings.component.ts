@@ -18,7 +18,7 @@ import { of } from 'rxjs';
 })
 export class ListAppointmentBookingsComponent implements OnInit {
 
-  displayedColumns: string[] = ['tutorName', 'vetName', 'animalName', 'scheduleDate', 'hour', 'status', 'actions'];
+  displayedColumns: string[] = ['tutorName', 'animalName', 'vetName', 'scheduleDate', 'hour', 'status', 'actions'];
 
   @ViewChild(MatPaginator) paginator!: MatPaginator;
   @ViewChild(MatSort, {static: true}) sort!: MatSort;
@@ -105,6 +105,7 @@ export class ListAppointmentBookingsComponent implements OnInit {
   }
 
   edit(id: string) {
-    this.router.navigateByUrl(`animal/edit/${id}`);
+    this.router.navigateByUrl(`appointment-booking/edit/${id}`);
+    // this.router.navigateByUrl('appointment-booking/edit/fc736663-44f1-48c3-91ef-08db4d6ef34f');
   }
 }

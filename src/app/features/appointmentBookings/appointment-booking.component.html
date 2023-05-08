@@ -1,1 +1,221 @@
-<p>appointment-booking works!</p>
+<mat-card class="mat-elevation-z0 main-card-without-border">
+  <form [formGroup]="scheduleForm" (ngSubmit)="onSubmit()" novalidate>
+    <mat-card-header>
+      <mat-card-title>{{ action }} Agendamento de Consulta</mat-card-title>
+    </mat-card-header>
+    <mat-card-content class="margin-card">
+
+      <mat-card class="sub-card">
+        <mat-card-header class="sub-card-title">
+          Dados da Consulta
+        </mat-card-header>
+        <mat-card-content class="sub-card-content">
+          <mat-form-field appearance="fill" class="margin-right">
+            <mat-label>Data</mat-label>
+            <input matInput [matDatepicker]="picker" formControlName="scheduleDate">
+            <mat-datepicker-toggle matIconSuffix [for]="picker"></mat-datepicker-toggle>
+            <mat-datepicker #picker></mat-datepicker>
+            <mat-error *ngIf="f.get('scheduleDate')?.hasError('required') && (f.get('scheduleDate')?.dirty || f.get('scheduleDate')?.touched)">
+              O campo data é obrigatório
+            </mat-error>
+          </mat-form-field>
+          <mat-form-field class="fill width-field-20">
+            <mat-label>Hora</mat-label>
+            <input matInput formControlName="hour" maxlength="10" />
+                <mat-error *ngIf="f.get('hour')?.hasError('required') && (f.get('hour')?.dirty || f.get('hour')?.touched)">
+                  O campo hora é obrigatório
+                </mat-error>
+          </mat-form-field>
+          <mat-form-field class="fill width-field-30">
+            <mat-label>Status</mat-label>
+            <mat-select formControlName="scheduleStatusId" [(value)]="selectedStatus">
+                <mat-option *ngFor="let status of scheduleStatus" [value]="status.id">
+                  {{ status.name }}
+                </mat-option>
+            </mat-select>
+            <mat-error *ngIf="f.get('scheduleStatusId')?.hasError('required') && (f.get('scheduleStatusId')?.dirty || f.get('scheduleStatusId')?.touched)">
+              É obrigatório selecionar um status
+            </mat-error>
+          </mat-form-field>
+<!-- linha -->
+          <mat-form-field class="fill width-field-60">
+            <mat-label>Veterinário</mat-label>
+            <mat-select formControlName="employeeId" [(value)]="selectedVet">
+                <mat-option *ngFor="let vet of vets" [value]="vet.id">
+                  {{ vet.name }}
+                </mat-option>
+            </mat-select>
+            <mat-error *ngIf="f.get('employeeId')?.hasError('required') && (f.get('employeeId')?.dirty || f.get('employeeId')?.touched)">
+              É obrigatório selecionar um veterinário
+            </mat-error>
+          </mat-form-field>
+
+          <mat-form-field class="fill width-field-80 textAreaHeight">
+            <mat-label>Observações</mat-label>
+            <textarea matInput formControlName="scheduleComments" maxlength="3000"></textarea>
+          </mat-form-field>
+        </mat-card-content>
+      </mat-card>
+<!-- linha -->
+      <mat-card class="sub-card">
+        <mat-card-header class="sub-card-title">
+          Dados do Tutor
+        </mat-card-header>
+        <mat-card-content class="sub-card-content">
+          <mat-form-field class="fill width-field-40">
+            <mat-label>Nome</mat-label>
+            <mat-select formControlName="tutorId" [(value)]="selectedTutor">
+                <mat-option *ngFor="let tutor of tutors" [value]="tutor.id">
+                  {{ tutor.name }}
+                </mat-option>
+            </mat-select>
+            <mat-error *ngIf="f.get('tutorId')?.hasError('required') && (f.get('tutorId')?.dirty || f.get('tutorId')?.touched)">
+              É obrigatório selecionar um tutor
+            </mat-error>
+          </mat-form-field>
+          <mat-form-field class="fill width-field-40">
+            <mat-label>Animal</mat-label>
+            <mat-select formControlName="animalId" [(value)]="selectedAnimal">
+                <mat-option *ngFor="let animal of animals" [value]="animal.id">
+                  {{ animal.name }}
+                </mat-option>
+            </mat-select>
+            <mat-error *ngIf="f.get('animalId')?.hasError('required') && (f.get('animalId')?.dirty || f.get('animalId')?.touched)">
+              É obrigatório selecionar um animal
+            </mat-error>
+          </mat-form-field>
+          <mat-form-field class="fill width-field-80 textAreaHeight">
+            <mat-label>Observações</mat-label>
+            <textarea matInput formControlName="tutorComments" maxlength="3000"></textarea>
+          </mat-form-field>
+        </mat-card-content>
+      </mat-card>
+
+      <mat-card class="sub-card">
+        <mat-card-header class="sub-card-title">
+          Serviço(s) & Produto(s)
+        </mat-card-header>
+        <mat-card-content class="sub-card-content">
+          <mat-form-field class="fill width-field-30">
+            <mat-label>Serviço</mat-label>
+            <mat-select formControlName="serviceId">
+                <mat-option *ngFor="let service of scheduleServices" [value]="service.id">
+                  {{ service.name }}
+                </mat-option>
+            </mat-select>
+          </mat-form-field>
+          <mat-form-field class="fill width-field-15">
+            <mat-label>Custo</mat-label>
+            <input matInput formControlName="serviceSaleValue" mask="separator.2" thousandSeparator="." decimalMarker="," />
+          </mat-form-field>
+          <mat-form-field class="fill width-field-15">
+            <mat-label>Quantidade</mat-label>
+            <input matInput formControlName="serviceQuantity" mask="99" />
+            <mat-error *ngIf="f.get('serviceQuantity')?.hasError('required') && (f.get('serviceQuantity')?.dirty || f.get('serviceQuantity')?.touched)">
+              É obrigatório informar a quantidade
+            </mat-error>
+          </mat-form-field>
+          <mat-form-field class="fill width-field-20">
+            <mat-label>Total</mat-label>
+            <input matInput formControlName="serviceTotalValue" mask="separator.2" thousandSeparator="." decimalMarker="," />
+          </mat-form-field>
+          <button type="button" mat-mini-fab color="primary" matTooltip="Adicionar"
+            [disabled]="disableAddServiceButton"
+            (click)="addService()">
+            <mat-icon>add</mat-icon>
+          </button>
+<!-- linha -->
+          <mat-form-field class="fill width-field-30">
+            <mat-label>Produto</mat-label>
+            <mat-select formControlName="productId">
+                <mat-option *ngFor="let product of scheduleProducts" [value]="product.id">
+                  {{ product.name }}
+                </mat-option>
+            </mat-select>
+          </mat-form-field>
+          <mat-form-field class="fill width-field-15">
+            <mat-label>Custo</mat-label>
+            <input matInput formControlName="productSaleValue" mask="separator.2" thousandSeparator="." decimalMarker="," />
+          </mat-form-field>
+          <mat-form-field class="fill width-field-15">
+            <mat-label>Quantidade</mat-label>
+            <input matInput formControlName="productQuantity" mask="99" />
+            <mat-error *ngIf="f.get('productQuantity')?.hasError('required') && (f.get('productQuantity')?.dirty || f.get('productQuantity')?.touched)">
+              É obrigatório informar a quantidade
+            </mat-error>
+          </mat-form-field>
+          <mat-form-field class="fill width-field-20">
+            <mat-label>Total</mat-label>
+            <input matInput formControlName="productTotalValue" mask="separator.2" thousandSeparator="." decimalMarker="," />
+          </mat-form-field>
+          <button type="button" mat-mini-fab color="primary" matTooltip="Adicionar"
+            [disabled]="disableAddProductButton"
+            (click)="addProduct()">
+            <mat-icon>add</mat-icon>
+          </button>
+        </mat-card-content>
+      </mat-card>
+
+      <mat-card class="sub-card">
+        <mat-card-header class="sub-card-title">
+        </mat-card-header>
+        <mat-card-content class="sub-card-content">
+          <div class="search-table-list" *ngIf="selectedServicesProducts.length == 0">
+            Nenhum serviço ou produto inserido
+          </div>
+
+          <div class="search-table-list" *ngIf="selectedServicesProducts.length > 0">
+            <table mat-table [dataSource]="dataSource" class="mat-elevation-z8">
+              <ng-container matColumnDef="name">
+                <th mat-header-cell *matHeaderCellDef> Descrição</th>
+                <td mat-cell *matCellDef="let element">{{ element.name }}</td>
+                <td mat-footer-cell *matFooterCellDef></td>
+              </ng-container>
+              <ng-container matColumnDef="saleValue">
+                <th mat-header-cell *matHeaderCellDef> Valor</th>
+                <td mat-cell *matCellDef="let element">{{ element.saleValue | currency }}</td>
+                <td mat-footer-cell *matFooterCellDef></td>
+              </ng-container>
+              <ng-container matColumnDef="quantity">
+                <th mat-header-cell *matHeaderCellDef> Quantidade</th>
+                <td mat-cell *matCellDef="let element">{{ element.quantity }}</td>
+                <td mat-footer-cell *matFooterCellDef></td>
+              </ng-container>
+              <ng-container matColumnDef="subTotal">
+                <th mat-header-cell *matHeaderCellDef> Sub Total</th>
+                <td mat-cell *matCellDef="let element">{{ element.subTotal | currency }}</td>
+                <td mat-footer-cell *matFooterCellDef>{{ getTotal() | currency }}</td>
+              </ng-container>
+              <ng-container matColumnDef="actions">
+                <th mat-header-cell *matHeaderCellDef>Ação</th>
+                <td mat-cell *matCellDef="let element">
+                  <mat-icon
+                    color="warn"
+                    class="cursorPointer"
+                    matTooltip="excluir"
+                    (click)="removeProduct(element)">delete</mat-icon>
+                </td>
+                <td mat-footer-cell *matFooterCellDef></td>
+              </ng-container>
+
+              <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+              <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
+              <tr mat-footer-row *matFooterRowDef="displayedColumns; sticky: true"></tr>
+
+            </table>
+          </div>
+
+        </mat-card-content>
+      </mat-card>
+      <div class="aligin-button-right">
+        <button type="button" mat-flat-button color="primary" (click)="cancelForm()" class="button-margin-right">Voltar</button>
+        <button type="submit" *ngIf="this.action == 'Adicionar'" [disabled]="selectedServicesProducts.length == 0" mat-flat-button color="primary">Enviar</button>
+      </div>
+    </mat-card-content>
+  </form>
+</mat-card>
+<div class="overlaySpinner" *ngIf="showSpinner">
+  <div class="centerSpinner">
+    <mat-spinner></mat-spinner>
+  </div>
+</div>

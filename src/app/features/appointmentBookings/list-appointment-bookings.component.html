@@ -31,17 +31,17 @@
           <th mat-header-cell *matHeaderCellDef> Tutor</th>
           <td mat-cell *matCellDef="let element">{{ element.tutorName }}</td>
         </ng-container>
-        <ng-container matColumnDef="vetName">
-          <th mat-header-cell *matHeaderCellDef> Veterinário</th>
-          <td mat-cell *matCellDef="let element">{{ element.vetName }}</td>
-        </ng-container>
         <ng-container matColumnDef="animalName">
           <th mat-header-cell *matHeaderCellDef> Animal</th>
           <td mat-cell *matCellDef="let element">{{ element.animalName }}</td>
         </ng-container>
+        <ng-container matColumnDef="vetName">
+          <th mat-header-cell *matHeaderCellDef> Veterinário</th>
+          <td mat-cell *matCellDef="let element">{{ element.vetName }}</td>
+        </ng-container>
         <ng-container matColumnDef="scheduleDate">
           <th mat-header-cell *matHeaderCellDef> Data</th>
-          <td mat-cell *matCellDef="let element">{{ element.scheduleDate }}</td>
+          <td mat-cell *matCellDef="let element">{{ element.scheduleDate | date: 'dd/MM/yyyy' }}</td>
         </ng-container>
         <ng-container matColumnDef="hour">
           <th mat-header-cell *matHeaderCellDef> Hora</th>

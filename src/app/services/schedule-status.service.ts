@@ -10,7 +10,7 @@ import { environment } from 'src/environments/environment';
 })
 export class ScheduleStatusService {
 
-  private apiUrl = `${environment.apiUrl}races`;
+  private apiUrl = `${environment.apiUrl}scheduleStatus`;
 
   constructor(private http: HttpClient) { }
 

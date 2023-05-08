@@ -21,6 +21,13 @@ import { ProductService } from 'src/app/services/product.service';
 import { MatSnackBar, MatSnackBarConfig } from '@angular/material/snack-bar';
 import { SnackBarComponent } from 'src/app/shared/snack-bar/snack-bar.component';
 import { of } from 'rxjs';
+import { SelectedServiceProduct } from 'src/app/interfaces/selected-service-product';
+import { MatDialog } from '@angular/material/dialog';
+import { DialogDataComponent } from 'src/app/shared/dialog-data/dialog-data.component';
+import { MatTableDataSource } from '@angular/material/table';
+import { ScheduleServiceSelected } from 'src/app/domain/schedule-service-selected';
+import { ScheduleProductSelected } from 'src/app/domain/schedule-product-selected';
+
 
 @Component({
   selector: 'app-appointment-booking',
@@ -41,7 +48,6 @@ export class AppointmentBookingComponent implements OnInit {
   submitted = false;
   action = '';
   scheduleForm!: FormGroup;
-  animal = new Schedule();
   showSpinner = false;
 
   schedule = new Schedule();
@@ -52,10 +58,20 @@ export class AppointmentBookingComponent implements OnInit {
   scheduleServices: ListScheduleService[] = [];
   scheduleProducts: ListScheduleProduct[] = [];
 
+  selectedServicesProducts: SelectedServiceProduct[] = [];
+  selectedServiceProduct!: SelectedServiceProduct;
+  selectedServiceId!: string;
+  selectedProductId!: string;
+  displayedColumns: string[] = ['name', 'saleValue', 'quantity', 'subTotal', 'actions'];
+  dataSource: any;
+
   selectedStatus!: string | null;
   selectedVet!: string | null;
   selectedTutor!: string | null;
   selectedAnimal!: string | null;
+
+  disableAddServiceButton = true;
+  disableAddProductButton = true;
 
   constructor(
     private route: ActivatedRoute,
@@ -68,6 +84,7 @@ export class AppointmentBookingComponent implements OnInit {
     private animalService: AnimalService,
     private scheduleService: ScheduleServiceService,
     private productService: ProductService,
+    private dialog: MatDialog,
     private _adapter: DateAdapter<any>,
     @Inject(MAT_DATE_LOCALE) private _locale: string,
     private snackBar: MatSnackBar,)
@@ -174,6 +191,8 @@ export class AppointmentBookingComponent implements OnInit {
   }
 
   getAnimals(tutorId: string, selectedAnimalId: string | null): void {
+    this.showSpinner = true;
+
     this.animalService.getByTutorId(tutorId)
     .subscribe({
       next: (result) => {
@@ -199,6 +218,9 @@ export class AppointmentBookingComponent implements OnInit {
          });
 
          return of([])
+      },
+      complete: () => {
+        this.showSpinner = false;
       }
     });
   }
@@ -251,6 +273,9 @@ export class AppointmentBookingComponent implements OnInit {
            });
 
            return of([])
+        },
+        complete: () => {
+          this.showSpinner = false;
         }
       });
   }
@@ -273,9 +298,21 @@ export class AppointmentBookingComponent implements OnInit {
       animalId: [this.schedule.animalId, Validators.required],
       tutorComments: [this.schedule.tutorComments],
       active: [this.schedule.active],
+      serviceId: [this.schedule.serviceId],
+      serviceSaleValue: [this.schedule.serviceSaleValue],
+      serviceQuantity: [this.schedule.serviceQuantity, Validators.required],
+      serviceTotalValue: [this.schedule.serviceTotalValue],
+      productId: [this.schedule.productId],
+      productSaleValue: [this.schedule.productSaleValue],
+      productQuantity: [this.schedule.productQuantity, Validators.required],
+      productTotalValue: [this.schedule.productTotalValue],
     });
 
     this.scheduleForm.get('animalId')?.disable();
+    this.scheduleForm.get('serviceSaleValue')?.disable();
+    this.scheduleForm.get('serviceTotalValue')?.disable();
+    this.scheduleForm.get('productSaleValue')?.disable();
+    this.scheduleForm.get('productTotalValue')?.disable();
   }
 
   get f() { return this.scheduleForm; }
@@ -322,7 +359,36 @@ export class AppointmentBookingComponent implements OnInit {
     this.showSpinner = true;
 
     if (this.action == 'Adicionar') {
-      this.service.addSchedule(this.scheduleForm.value)
+
+      let newSchedule = new Schedule();
+
+      newSchedule.scheduleDate = this.scheduleForm.get('scheduleDate')?.value;
+      newSchedule.hour = this.scheduleForm.get('hour')?.value;
+      newSchedule.tutorComments = this.scheduleForm.get('tutorComments')?.value;
+      newSchedule.scheduleComments = this.scheduleForm.get('scheduleComments')?.value;
+      newSchedule.scheduleStatusId = this.scheduleForm.get('scheduleStatusId')?.value;
+      newSchedule.employeeId = this.scheduleForm.get('employeeId')?.value;
+      newSchedule.tutorId = this.scheduleForm.get('tutorId')?.value;
+      newSchedule.animalId = this.scheduleForm.get('animalId')?.value;
+
+      this.selectedServicesProducts.forEach(element => {
+        if (element.type == 'service') {
+          const scheduleService: ScheduleServiceSelected = {
+            serviceId: element.id,
+          }
+
+          newSchedule.scheduleServiceSelected.push(scheduleService);
+        } else {
+          const scheduleProduct: ScheduleProductSelected = {
+            productId: element.id,
+            quantity: element.quantity,
+          }
+
+          newSchedule.scheduleProductSelected.push(scheduleProduct);
+        }
+      });
+
+      this.service.addSchedule(newSchedule)
       .subscribe({
         next: (result) => {
           this.snackBar.open(
@@ -406,8 +472,39 @@ export class AppointmentBookingComponent implements OnInit {
     }
   }
 
+  getTotal(): number {
+    return this.selectedServicesProducts.map(x => x.subTotal).reduce((acc, value) => acc + value, 0);
+  }
+
+  removeProduct(selectedServiceProduct: SelectedServiceProduct): void {
+    let type = 'serviço';
+
+    if (selectedServiceProduct.type === 'product') {
+      type = 'produto';
+    }
+    const dialogRef = this.dialog.open(DialogDataComponent, {
+      data: {
+        message: `Confirma a exclusão do ${type} ${selectedServiceProduct.name}?`,
+      },
+    });
+
+    dialogRef.afterClosed().subscribe( result => {
+      if (result === true) {
+        this.dataSource = this.selectedServicesProducts.filter((value, key) => {
+          return value.id != selectedServiceProduct.id;
+        });
+
+        this.selectedServicesProducts = this.selectedServicesProducts.filter((value, key) => {
+          return value.id != selectedServiceProduct.id;
+        });
+
+        this.dataSource = new MatTableDataSource(this.selectedServicesProducts)
+      }
+    });
+  }
+
   manageForm(): void {
-    this.f.get('tutorid')?.valueChanges.subscribe(
+    this.f.get('tutorId')?.valueChanges.subscribe(
       value => {
         if (value != null) {
           this.getAnimals(value, null);
@@ -415,6 +512,119 @@ export class AppointmentBookingComponent implements OnInit {
         }
       }
     )
+
+    this.f.get('serviceId')?.valueChanges.subscribe(
+      value => {
+        if (value != null) {
+          const service = this.scheduleServices.find(x => x.id == value);
+          const quantity = 1;
+          const type = 'service';
+
+          if (service) {
+            this.f.get('serviceSaleValue')?.setValue(service.saleValue);
+            this.f.get('serviceQuantity')?.setValue(quantity);
+
+            const subTotal = service?.saleValue * quantity;
+            this.f.get('serviceTotalValue')?.setValue(subTotal);
+
+            this.selectedServiceProduct = {
+              id: service.id,
+              name: service.name,
+              saleValue: service.saleValue,
+              quantity: quantity,
+              subTotal: subTotal,
+              type: type
+            };
+
+            this.disableAddServiceButton = false;
+          }
+        }
+      }
+    )
+
+    this.f.get('serviceQuantity')?.valueChanges.subscribe(
+      value => {
+        if (value != null && value > 0 && this.f.get('serviceId')?.value != null) {
+          const subTotal = this.selectedServiceProduct.saleValue * value;
+          this.f.get('serviceTotalValue')?.setValue(subTotal);
+          this.selectedServiceProduct.quantity = value;
+          this.selectedServiceProduct.subTotal = subTotal;
+
+          this.disableAddServiceButton = false;
+        } else {
+          this.f.get('serviceTotalValue')?.setValue(null);
+          this.disableAddServiceButton = true;
+        }
+      }
+    )
+
+    this.f.get('productId')?.valueChanges.subscribe(
+      value => {
+        if (value != null) {
+          const product = this.scheduleProducts.find(x => x.id == value);
+          let quantity = 1;
+          const type = 'product';
+
+          if (product) {
+            this.f.get('productSaleValue')?.setValue(product.saleValue);
+            this.f.get('productQuantity')?.setValue(quantity);
+
+            const subTotal = product?.saleValue * quantity;
+            this.f.get('productTotalValue')?.setValue(subTotal);
+
+            this.selectedServiceProduct = {
+              id: product.id,
+              name: product.name,
+              saleValue: product.saleValue,
+              quantity: quantity,
+              subTotal: subTotal,
+              type: type
+            };
+
+            this.disableAddProductButton = false;
+          }
+        }
+      }
+    )
+
+    this.f.get('productQuantity')?.valueChanges.subscribe(
+      value => {
+        if (value != null && value > 0 && this.f.get('productId')?.value != null) {
+          const subTotal = this.selectedServiceProduct.saleValue * value;
+          this.f.get('productTotalValue')?.setValue(subTotal);
+          this.selectedServiceProduct.quantity = value;
+          this.selectedServiceProduct.subTotal = subTotal;
+
+          this.disableAddProductButton = false;
+        } else {
+          this.f.get('productTotalValue')?.setValue(null);
+          this.disableAddProductButton = true;
+        }
+      }
+    )
+
+  }
+
+  addService(): void {
+    this.selectedServicesProducts.push(this.selectedServiceProduct);
+    this.dataSource = new MatTableDataSource(this.selectedServicesProducts);
+    this.f.get('serviceId')?.setValue(undefined);
+    this.f.get('serviceSaleValue')?.setValue(undefined);
+    this.f.get('serviceQuantity')?.setValue(undefined);
+    this.f.get('serviceQuantity')?.clearValidators();
+    this.f.get('serviceQuantity')?.updateValueAndValidity();
+    this.f.get('serviceTotalValue')?.setValue(undefined);
+  }
+
+  addProduct(): void {
+    this.selectedServicesProducts.push(this.selectedServiceProduct);
+    this.dataSource = new MatTableDataSource(this.selectedServicesProducts);
+    this.f.get('productId')?.setValue(undefined);
+    this.f.get('productSaleValue')?.setValue(undefined);
+    this.f.get('productQuantity')?.setValue(undefined);
+    this.f.get('productQuantity')?.clearValidators();
+    this.f.get('productQuantity')?.updateValueAndValidity();
+    this.f.get('productTotalValue')?.setValue(undefined);
   }
 
   cancelForm(): void {
@@ -429,5 +639,7 @@ export class AppointmentBookingComponent implements OnInit {
       this.f.get(name)?.clearValidators();
       this.f.get(name)?.updateValueAndValidity();
     }
+
+    this.selectedServicesProducts = [];
   }
 }

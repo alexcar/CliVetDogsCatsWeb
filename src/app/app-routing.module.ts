@@ -46,9 +46,10 @@ const routes: Routes = [
 
   { path: 'list-appointment-bookings', component: ListAppointmentBookingsComponent },
   { path: 'appointment-booking/add', component: AppointmentBookingComponent },
-  { path: 'appointment-booking/edit:id', component: AppointmentBookingComponent },
+  { path: 'appointment-booking/edit/:id', component: AppointmentBookingComponent },
 
-  { path: '**', redirectTo: '', pathMatch: 'full' }
+
+  { path: '**', redirectTo: '', pathMatch: 'full' },
 ];
 
 @NgModule({
