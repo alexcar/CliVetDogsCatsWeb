@@ -1,8 +1,9 @@
 import { ScheduleProductSelected } from "./schedule-product-selected";
 import { ScheduleServiceSelected } from "./schedule-service-selected";
+import { ScheduleStatus } from "../interfaces/schedule-status";
 
 export class Schedule {
-  public id!: string;
+  public id!: string | null;
   public scheduleDate!: Date;
   public hour!: number;
   public tutorComments!: string;
@@ -20,6 +21,7 @@ export class Schedule {
   public productSaleValue!: number;
   public productQuantity!: number;
   public productTotalValue!: number;
-  public scheduleServiceSelected: ScheduleServiceSelected[] = [];
-  public scheduleProductSelected: ScheduleProductSelected[] = [];
+  public scheduleStatus: ScheduleStatus[] = [];
+  public scheduleServiceSelected?: ScheduleServiceSelected[] = [];
+  public scheduleProductSelected?: ScheduleProductSelected[] = [];
 }

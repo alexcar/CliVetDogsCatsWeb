@@ -91,7 +91,7 @@
         </mat-card-content>
       </mat-card>
 
-      <mat-card class="sub-card">
+      <mat-card class="sub-card" *ngIf="scheduleStatusRealizado">
         <mat-card-header class="sub-card-title">
           Serviço(s) & Produto(s)
         </mat-card-header>
@@ -156,7 +156,7 @@
         </mat-card-content>
       </mat-card>
 
-      <mat-card class="sub-card">
+      <mat-card class="sub-card" *ngIf="displayListServicesproducts">
         <mat-card-header class="sub-card-title">
         </mat-card-header>
         <mat-card-content class="sub-card-content">
@@ -209,7 +209,7 @@
       </mat-card>
       <div class="aligin-button-right">
         <button type="button" mat-flat-button color="primary" (click)="cancelForm()" class="button-margin-right">Voltar</button>
-        <button type="submit" *ngIf="this.action == 'Adicionar'" [disabled]="selectedServicesProducts.length == 0" mat-flat-button color="primary">Enviar</button>
+        <button type="submit" mat-flat-button color="primary" [disabled]="!scheduleForm.valid">Enviar</button>
       </div>
     </mat-card-content>
   </form>
@@ -219,3 +219,5 @@
     <mat-spinner></mat-spinner>
   </div>
 </div>
+
+

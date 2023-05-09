@@ -57,8 +57,8 @@
             <mat-icon
               color="primary"
               class="cursorPointer"
-              matTooltip="Editar"
-              (click)="edit(element.id)">edit</mat-icon>
+              [matTooltip]="element.status != 'Realizado' ? 'Editar' : 'visualizar'"
+              (click)="edit(element.id)">{{ element.status != 'Realizado' ? 'edit' : 'preview' }}</mat-icon>
           </td>
         </ng-container>
 
