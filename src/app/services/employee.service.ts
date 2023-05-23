@@ -3,6 +3,7 @@ import { Observable, of, throwError } from 'rxjs';
 import { catchError, delay } from 'rxjs/operators';
 
 import { Employee } from './../domain/employee';
+import { EmployeeReport } from '../interfaces/employee-report';
 import { Injectable } from '@angular/core';
 import { ListEmployee } from '../interfaces/listEmployee';
 import { environment } from './../../environments/environment';
@@ -88,6 +89,25 @@ export class EmployeeService {
           return throwError(() => new Error(errorMessages.join('|')));
         })
       );
+  }
+
+  getReport(): Observable<EmployeeReport[]> {
+    return this.http.get<EmployeeReport[]>(`${this.apiUrl}/report`)
+      .pipe(delay(2000),
+      catchError(error => {
+        let errorMessages: string[] = [];
+
+          if (error.error !== undefined) {
+            error.error.forEach((item: any) => {
+              errorMessages.push(item.message);
+            });
+          } else {
+            errorMessages.push(error.message);
+          }
+
+          return throwError(() => new Error(errorMessages.join('|')));
+      })
+    );
   }
 
   addEmployee(employee: Employee): Observable<Employee> {

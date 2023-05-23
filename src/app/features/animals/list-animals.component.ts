@@ -193,6 +193,10 @@ export class ListAnimalsComponent implements OnInit {
     });
   }
 
+  report(): void {
+    this.router.navigateByUrl('animal/report');
+  }
+
   resetSearchForm(form: NgForm): void {
     form.resetForm();
   }

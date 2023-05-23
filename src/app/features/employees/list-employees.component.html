@@ -9,10 +9,18 @@
     </mat-form-field>
 
     <div>
-      <button mat-raised-button
+      <button mat-raised-button class="margin-right-button"
         (click)="add()"
         routerLinkActive="router-link-active"
-        color="primary">Adicionar</button>
+        color="primary">Adicionar
+      </button>
+      <button mat-raised-button
+          (click)="report()"
+        >Relatório <mat-icon
+        color="primary"
+        class="cursorPointer"
+        matTooltip="Relatório">receipt</mat-icon>
+      </button>
     </div>
 
     <div class="overlaySpinner" *ngIf="showSpinner">
@@ -71,3 +79,5 @@
     </div>
   </mat-card-content>
 </mat-card>
+
+

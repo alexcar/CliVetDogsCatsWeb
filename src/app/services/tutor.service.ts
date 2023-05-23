@@ -4,6 +4,7 @@ import { Observable, catchError, delay, throwError } from 'rxjs';
 import { Injectable } from '@angular/core';
 import { ListTutor } from '../interfaces/list-tutor';
 import { Tutor } from '../domain/tutor';
+import { TutorReport } from '../interfaces/tutor-report';
 import { environment } from 'src/environments/environment';
 
 @Injectable({
@@ -75,6 +76,25 @@ export class TutorService {
           return throwError(() => new Error(errorMessages.join('|')));
         })
       );
+  }
+
+  getReport(): Observable<TutorReport[]> {
+    return this.http.get<TutorReport[]>(`${this.apiUrl}/report`)
+      .pipe(delay(2000),
+      catchError(error => {
+        let errorMessages: string[] = [];
+
+          if (error.error !== undefined) {
+            error.error.forEach((item: any) => {
+              errorMessages.push(item.message);
+            });
+          } else {
+            errorMessages.push(error.message);
+          }
+
+          return throwError(() => new Error(errorMessages.join('|')));
+      })
+    );
   }
 
   addTutor(tutor: Tutor): Observable<Tutor> {

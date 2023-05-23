@@ -7,6 +7,7 @@ import { AppointmentBookingComponent } from './appointmentBookings/appointment-b
 import { CommonModule } from '@angular/common';
 import { DashboardComponent } from './dashboard/dashboard.component';
 import { EmployeeComponent } from './employees/employee.component';
+import { EmployeeReportComponent } from './employees/employee-report.component';
 import { ListAnimalsComponent } from './animals/list-animals.component';
 import { ListAppointmentBookingsComponent } from './appointmentBookings/list-appointment-bookings.component';
 import { ListEmployeesComponent } from './employees/list-employees.component';
@@ -19,9 +20,12 @@ import { ProductComponent } from './products/product.component';
 import { SharedModule } from './../shared/shared.module';
 import { StockReceiptComponent } from './stockReceipts/stock-receipt.component';
 import { SupplierComponent } from './suppliers/supplier.component';
+import { SupplierReportComponent } from './suppliers/supplier-report.component';
 import { TutorComponent } from './tutores/tutor.component';
 import localePt from '@angular/common/locales/pt';
 import {registerLocaleData} from '@angular/common';
+import { TutorReportComponent } from './tutores/tutor-report.component';
+import { AnimalReportComponent } from './animals/animal-report.component';
 
 registerLocaleData(localePt, 'pt');
 
@@ -42,7 +46,11 @@ registerLocaleData(localePt, 'pt');
     ListAnimalsComponent,
     AnimalComponent,
     ListAppointmentBookingsComponent,
-    AppointmentBookingComponent
+    AppointmentBookingComponent,
+    EmployeeReportComponent,
+    SupplierReportComponent,
+    TutorReportComponent,
+    AnimalReportComponent
   ],
   imports: [
     CommonModule,

@@ -11,6 +11,8 @@ import { NgForm } from '@angular/forms';
 import { Router } from '@angular/router';
 import { Search } from 'src/app/domain/search';
 import { SnackBarComponent } from './../../shared/snack-bar/snack-bar.component';
+import html2canvas from 'html2canvas';
+import jsPDF from 'jspdf';
 import { of } from 'rxjs';
 
 @Component({
@@ -166,6 +168,10 @@ export class ListEmployeesComponent implements OnInit {
           });
       }
     });
+  }
+
+  report(): void {
+    this.router.navigateByUrl('employee/report');
   }
 
   resetSearchForm(form: NgForm): void {

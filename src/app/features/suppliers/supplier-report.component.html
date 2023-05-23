@@ -1,0 +1,54 @@
+<mat-card class="main-card">
+  <mat-card-content class="margin-card">
+    <div class="search-table-list" id="htmlData">
+      <h3>&nbsp;Relatório de Fornecedores</h3>
+      <table mat-table [dataSource]="dataSource" class="mat-elevation-z8">
+        <ng-container matColumnDef="trade">
+          <th mat-header-cell *matHeaderCellDef> Nome</th>
+          <td mat-cell *matCellDef="let element">{{ element.trade }}</td>
+        </ng-container>
+        <ng-container matColumnDef="cnpj">
+          <th mat-header-cell *matHeaderCellDef> CNPJ</th>
+          <td mat-cell *matCellDef="let element">{{ element.cnpj | cpfCnpj }}</td>
+        </ng-container>
+        <ng-container matColumnDef="contact">
+          <th mat-header-cell *matHeaderCellDef> Contato</th>
+          <td mat-cell *matCellDef="let element">{{ element.contact }}</td>
+        </ng-container>
+        <ng-container matColumnDef="email">
+          <th mat-header-cell *matHeaderCellDef> E-mail</th>
+          <td mat-cell *matCellDef="let element">{{ element.email }}</td>
+        </ng-container>
+        <ng-container matColumnDef="cellPhone">
+          <th mat-header-cell *matHeaderCellDef> Celular</th>
+          <td mat-cell *matCellDef="let element">{{ element.cellPhone | phone }}</td>
+        </ng-container>
+        <tr mat-header-row *matHeaderRowDef="displayedColumnsPDF"></tr>
+        <tr mat-row *matRowDef="let row; columns: displayedColumnsPDF;"></tr>
+      </table>
+    </div>
+    <mat-card-actions align="end">
+      <button mat-raised-button class="margin-right-button"
+      (click)="downloadPDF()"
+      routerLinkActive="router-link-active">
+        Exportar PDF
+          <mat-icon
+            color="primary"
+            class="cursorPointer"
+            matTooltip="Relatório">cloud_download
+          </mat-icon>
+    </button>
+
+    <button mat-raised-button
+      (click)="cancelReport()">voltar
+    </button>
+    </mat-card-actions>
+  </mat-card-content>
+</mat-card>
+
+
+<div class="overlaySpinner" *ngIf="showSpinner">
+  <div class="centerSpinner">
+    <mat-spinner></mat-spinner>
+  </div>
+</div>

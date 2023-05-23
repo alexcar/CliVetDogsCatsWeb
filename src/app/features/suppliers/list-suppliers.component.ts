@@ -166,6 +166,10 @@ export class ListSuppliersComponent implements OnInit {
     });
   }
 
+  report(): void {
+    this.router.navigateByUrl('supplier/report');
+  }
+
   resetSearchForm(form: NgForm): void {
     form.resetForm();
   }

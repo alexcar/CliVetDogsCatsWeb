@@ -17,6 +17,10 @@ body { margin: 0; font-family: Roboto, "Helvetica Neue", sans-serif; }
   margin: 15px;
 }
 
+.margin-right-button {
+  margin-right: 10px;
+}
+
 .main-card-without-border {
   border-style: solid !important;
   border-width: medium !important;

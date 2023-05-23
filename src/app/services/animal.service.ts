@@ -2,6 +2,7 @@ import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { Observable, catchError, delay, throwError } from 'rxjs';
 
 import { Animal } from '../domain/animal';
+import { AnimalReport } from '../interfaces/animal-report';
 import { Injectable } from '@angular/core';
 import { ListAnimal } from '../interfaces/list-animal';
 import { environment } from 'src/environments/environment';
@@ -75,6 +76,25 @@ export class AnimalService {
           return throwError(() => new Error(errorMessages.join('|')));
         })
       );
+  }
+
+  getReport(): Observable<AnimalReport[]> {
+    return this.http.get<AnimalReport[]>(`${this.apiUrl}/report`)
+      .pipe(delay(2000),
+      catchError(error => {
+        let errorMessages: string[] = [];
+
+          if (error.error !== undefined) {
+            error.error.forEach((item: any) => {
+              errorMessages.push(item.message);
+            });
+          } else {
+            errorMessages.push(error.message);
+          }
+
+          return throwError(() => new Error(errorMessages.join('|')));
+      })
+    );
   }
 
   addAnimal(animal: Animal): Observable<Animal> {

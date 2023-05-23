@@ -192,6 +192,10 @@ export class ListTutoresComponent implements OnInit {
     });
   }
 
+  report(): void {
+    this.router.navigateByUrl('tutor/report');
+  }
+
   resetSearchForm(form: NgForm): void {
     form.resetForm();
   }
